@@ -1,3 +1,73 @@
+from .models import *
 from django.contrib import admin
+from django.contrib.auth.models import User
+from django.contrib.auth.admin import UserAdmin
 
-# Register your models here.
+
+class BlogUserInline(admin.TabularInline):
+	model = BlogUser
+	
+
+class ArticleAdmin(admin.ModelAdmin):
+	list_display = ('auther', 'title', 'is_valid', 'is_active', 'pub_date')
+
+
+class CommentAdmin(admin.ModelAdmin):
+	list_display = ('user', 'article', 'pub_date', 'is_valid')
+
+
+class BlogUserAdmin(UserAdmin):
+	#list_display = ('user', 'first_name', 'last_name', 'is_auther', 'is_editor', 'is_manager')
+	inlines = [BlogUserInline]
+	readonly_fields = [
+		'date_joined',
+		'last_login'
+	]
+
+	def get_form(self, request, obj=None, **kwargs):
+		form = super().get_form(request, obj, **kwargs)
+		is_superuser = request.user.is_superuser
+
+		disabled_fields = set() 
+
+		if not is_superuser:
+			disabled_fields |= {
+				'is_superuser',
+				'username',
+				'user_permissions',
+			}
+		# Prevent non-superusers from editing their own permissions
+		if (
+			not is_superuser
+			and obj is not None
+			and obj == request.user
+			):
+			disabled_fields |= {
+				'is_staff',
+				'is_superuser',
+				'groups',
+				'user_permissions',
+			}
+		for f in disabled_fields:
+			if f in form.base_fields:
+				form.base_fields[f].disabled = True
+
+		return form
+
+
+
+class TagAdmin(admin.ModelAdmin):
+	list_display = ('name',)
+	
+
+class TopicAdmin(admin.ModelAdmin):
+	list_display = ('name', 'super_topic')	
+
+admin.site.unregister(User)
+
+admin.site.register(Article, ArticleAdmin)
+admin.site.register(User, BlogUserAdmin)
+admin.site.register(Comment, CommentAdmin)
+admin.site.register(Topic, TopicAdmin)
+admin.site.register(Tag, TagAdmin)
+
