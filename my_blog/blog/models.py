@@ -4,11 +4,11 @@ from django.contrib.auth.models import User
 
 
 class Article(models.Model):
-	is_active = models.BooleanField('نمایش عمومی؟', default=False)
+	is_active = models.BooleanField('نمایش عمومی؟', default=True)
 	is_valid = models.BooleanField('تایید شده؟', default=False)
 	pub_date = models.DateField('تاریخ انتشار', default=timezone.now)
 	val_date = models.DateField('تاریخ تایید', null=True, blank=True)
-	img_path = models.FileField('محل ذخیره تصویر', )
+	img_path = models.FileField('محل ذخیره تصویر', upload_to='%Y/%m/%d/')
 	title = models.CharField('عنوان مقاله', max_length=150)
 	text = models.TextField('متن مقاله', )
 	auther = models.ForeignKey('BlogUser', on_delete=models.CASCADE, related_name='published', verbose_name='نویسنده')
@@ -38,12 +38,17 @@ class Comment(models.Model):
 
 class BlogUser(models.Model):
 	user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE,
-        primary_key=True,
-    )
+		User,
+		on_delete=models.CASCADE,
+		primary_key=True,
+		verbose_name='نام کاربری'
+		)
+	
+	def user_directory_path(instance, filename):
+		return f'user/user_{instance.user.id}/{filename}'
+	
 	phone_number = models.CharField('شماره تلفن', max_length=11)
-	img_path = models.FileField('محل ذخیره عکس', )
+	img_path = models.FileField('محل ذخیره عکس', upload_to=user_directory_path)
 	is_auther = models.BooleanField('نویسنده است؟', default=False)
 	is_editor = models.BooleanField('ویراستار است؟', default=False)
 	is_manager = models.BooleanField('مدیر است؟', default=False)
@@ -53,8 +58,8 @@ class BlogUser(models.Model):
 	bio = models.CharField('درباره من', max_length=250)
 	
 	def __str__(self):
-		return self.username
-
+		return self.user.username
+	
 
 class Tag(models.Model):
 	name = models.CharField('برچسب', max_length=25)
