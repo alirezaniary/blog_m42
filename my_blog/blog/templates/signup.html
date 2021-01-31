@@ -1,0 +1,16 @@
+{% extends 'index.html' %}
+{% block title %} ثبت نام {% endblock %}
+
+{% block content %}
+
+{% if error %} 
+<div role="alert"> {{ error }} </div> 
+{% endif %}
+
+<h2>Sign up</h2>
+<form method="post"> 
+  {% csrf_token %}
+  {{ form }} 
+  <button type="submit"> ثبت نام </button>
+</form>
+{% endblock %}
