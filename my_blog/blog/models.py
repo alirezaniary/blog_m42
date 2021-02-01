@@ -36,13 +36,7 @@ class Comment(models.Model):
 		return self.text
 
 
-class BlogUser(models.Model):
-	user = models.OneToOneField(
-		User,
-		on_delete=models.CASCADE,
-		primary_key=True,
-		verbose_name='نام کاربری'
-		)
+class BlogUser(User):
 	
 	def user_directory_path(instance, filename):
 		return f'user/user_{instance.user.id}/{filename}'
@@ -58,7 +52,7 @@ class BlogUser(models.Model):
 	bio = models.CharField('درباره من', max_length=250)
 	
 	def __str__(self):
-		return self.user.username
+		return self.username
 	
 
 class Tag(models.Model):
