@@ -1,0 +1,16 @@
+{% extends 'index.html' %}
+{% block title %} مقاله جدید {% endblock %}
+
+{% block content %}
+
+{% if error %} 
+<div role="alert"> {{ error }} </div> 
+{% endif %}
+
+<form method="post"> 
+    {% csrf_token %}
+    {{ form.as_p }} 
+    <button type="submit"> ثبت </button>
+  </form>
+
+{% endblock %}
