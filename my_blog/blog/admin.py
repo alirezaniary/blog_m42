@@ -9,19 +9,35 @@ class BlogUserInline(admin.TabularInline):
 	
 
 class ArticleAdmin(admin.ModelAdmin):
-	list_display = ('auther', 'title', 'is_valid', 'is_active', 'pub_date')
+	list_display = ('auther', 
+					'title', 
+					'is_valid', 
+					'is_active', 
+					'pub_date')
 
 
 class CommentAdmin(admin.ModelAdmin):
-	list_display = ('user', 'article', 'pub_date', 'is_valid')
+	list_display = ('user', 
+					'article', 
+					'pub_date', 
+					'is_valid')
 
 
-class BlogUserAdmin(UserAdmin):
-	#list_display = ('user', 'first_name', 'last_name', 'is_auther', 'is_editor', 'is_manager')
-	inlines = [BlogUserInline]
+class BlogUserAdmin(admin.ModelAdmin):
+	list_display = ('username', 
+					'email', 
+					'is_auther', 
+					'is_editor', 
+					'is_deactive',)
+	exclude = ('password',
+			   'is_superuser', 
+			   'groups', 
+			   'user_permissions',
+			   'is_staff',
+			   'is_active',)
 	readonly_fields = [
 		'date_joined',
-		'last_login'
+		'last_login',
 	]
 
 	def get_form(self, request, obj=None, **kwargs):
@@ -55,7 +71,6 @@ class BlogUserAdmin(UserAdmin):
 		return form
 
 
-
 class TagAdmin(admin.ModelAdmin):
 	list_display = ('name',)
 	
@@ -63,10 +78,9 @@ class TagAdmin(admin.ModelAdmin):
 class TopicAdmin(admin.ModelAdmin):
 	list_display = ('name', 'super_topic')	
 
-admin.site.unregister(User)
 
 admin.site.register(Article, ArticleAdmin)
-admin.site.register(User, BlogUserAdmin)
+admin.site.register(BlogUser, BlogUserAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Topic, TopicAdmin)
 admin.site.register(Tag, TagAdmin)
