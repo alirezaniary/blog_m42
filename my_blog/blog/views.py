@@ -28,6 +28,8 @@ def new_article(request):
         if form.is_valid():
             form.save()
             return redirect('blog:index')
+        else:
+            raise Exception
     else:
         form = ArticleCreationForm()
     return render(request, 'new_article.html', {'form': form})

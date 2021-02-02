@@ -23,4 +23,10 @@ class SignUpForm(ModelForm):
 class ArticleCreationForm(ModelForm):
 	class Meta:
 		model = Article
-		fields = ('title', 'text', 'img_path', 'tag', 'topic')
+		fields = ('title', 
+				  'text', 
+				  'img_path', 
+				  'tag', 
+				  'topic', 
+				  'is_active', 
+				  'is_valid')
