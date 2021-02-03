@@ -12,7 +12,7 @@ class SignUpForm(ModelForm):
 
 	class Meta:
 		model = BlogUser
-		exclude = ('is_editor', 'is_deactive')
+		exclude = ('is_editor', 'is_inactive')
         
 
 # class SignUpForm(ModelForm):

@@ -9,7 +9,7 @@ class BlogUserInline(admin.TabularInline):
 	
 
 class ArticleAdmin(admin.ModelAdmin):
-	list_display = ('auther', 
+	list_display = ('author', 
 					'title', 
 					'is_valid', 
 					'is_active', 
@@ -26,9 +26,9 @@ class CommentAdmin(admin.ModelAdmin):
 class BlogUserAdmin(admin.ModelAdmin):
 	list_display = ('username', 
 					'email', 
-					'is_auther', 
+					'is_author', 
 					'is_editor', 
-					'is_deactive',)
+					'is_inactive',)
 	exclude = ('password',
 			   'is_superuser', 
 			   'groups', 
