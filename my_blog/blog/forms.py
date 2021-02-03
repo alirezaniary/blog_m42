@@ -25,6 +25,7 @@ class ArticleCreationForm(ModelForm):
 		model = Article
 		fields = ('title', 
 				  'text', 
+				  'author',
 				  'img_path', 
 				  'tag', 
 				  'topic', 

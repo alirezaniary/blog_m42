@@ -9,8 +9,9 @@
 
 
 
-<form id="new-form" method="post"> 
+<form id="new-form" method="post" enctype="multipart/form-data"> 
 	{% csrf_token %}
+	{{ form.errors }}
 	<div class="new-page1">
 		<div class="form-floating mb-3 ">
 			<input type="text " name="{{ form.title.name }}" maxlength="150" required id="id_title" class="form-control" placeholder="">
@@ -35,7 +36,7 @@
 		
 					<!-- Upload image input-->
 					<div class="input-group mb-3 px-2 py-2 rounded-pill bg-dark shadow-sm">
-						<input name="{{ form.img_path.name }}" required id="upload" type="file"  class="form-control border-0">
+					<input name="{{ form.img_path.name }}" required id="upload" type="file"  class="form-control border-0">
 						<label id="upload-label" for="upload" class="font-weight-light keep-right text-muted">آپلود تصویر</label>
 						<div class="input-group-append">
 							<label for="upload" class="btn btn-light m-0 rounded-pill px-4"> 
@@ -58,9 +59,18 @@
 	{{ form.is_active }}
 	{{ form.is_valid }}
 
+
+<select class="d-none" name="author" required id="id_author">
+
+
+  <option value="{{ user.id }}" selected>{{ user.username }}</option>
+
+</select>
+
 		<div id="back" class="btn btn-outline-secondary" > برگشت </div>
 		<button class="btn btn-outline-primary" type="submit">ذخیره</button>
 	</div>
+	
 </form>
 
 {% endblock %}

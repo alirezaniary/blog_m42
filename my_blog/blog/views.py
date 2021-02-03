@@ -32,16 +32,25 @@ def sign_up(request):
 
 def new_article(request):
     if request.method == 'POST':
-        form = ArticleCreationForm(request.POST)
+        form = ArticleCreationForm(request.POST, request.FILES)
+
         if form.is_valid():
-            form.save()
-            return redirect('blog:index')
+            article = form.save()
+            print(article)
+            id = article.id
+            print(id)
+            un = article.author.username
+            print(un)
+            return redirect('blog:article', article_id=id, username=un)
         else:
-            raise Exception
+            render(request, 'new_article.html', {'form': form,
+                                                'topics': topics,
+                                                })
     else:
         form = ArticleCreationForm()
     return render(request, 'new_article.html', {'form': form,
-                                                'topics': topics
+                                                'topics': topics,
+
                                                 })
 
 
