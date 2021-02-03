@@ -102,3 +102,11 @@ body {
 .error{
 	color: red;
 }
+
+.rounded-app{
+	border-radius: 25%;
+}
+
+.h-165{
+	height: 165px;
+}
