@@ -35,13 +35,13 @@ def new_article(request):
         form = ArticleCreationForm(request.POST, request.FILES)
 
         if form.is_valid():
-            article = form.save()
-            print(article)
-            id = article.id
-            print(id)
-            un = article.author.username
-            print(un)
-            return redirect('blog:article', article_id=id, username=un)
+            article = form.save(commit=False)
+            article.author_id = request.user.bloguser.id
+            article.save()
+            form.save_m2m()
+            return redirect('blog:article',
+            				article_id=article.id,
+            				username=request.user.username)
         else:
             render(request, 'new_article.html', {'form': form,
                                                 'topics': topics,

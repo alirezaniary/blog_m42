@@ -24,8 +24,7 @@ class ArticleCreationForm(ModelForm):
 	class Meta:
 		model = Article
 		fields = ('title', 
-				  'text', 
-				  'author',
+				  'text',
 				  'img_path', 
 				  'tag', 
 				  'topic', 
