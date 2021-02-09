@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.core.validators import MinLengthValidator
 
 
 class Article(models.Model):
@@ -10,7 +11,7 @@ class Article(models.Model):
     val_date = models.DateField('تاریخ تایید', null=True, blank=True)
     img_path = models.ImageField('محل ذخیره تصویر', upload_to='%Y/%m/%d/')
     title = models.CharField('عنوان مقاله', max_length=150)
-    text = models.TextField('متن مقاله', )
+    text = models.TextField('متن مقاله', validators=[MinLengthValidator(300)])
     author = models.ForeignKey(
         'BlogUser', on_delete=models.CASCADE, related_name='published', verbose_name='نویسنده')
     validator = models.ForeignKey('BlogUser', on_delete=models.PROTECT, null=True,
@@ -70,7 +71,7 @@ class BlogUser(User):
 
 
 class Tag(models.Model):
-    name = models.CharField('برچسب', max_length=25)
+    name = models.CharField('برچسب', max_length=25, unique=True)
 
     def __str__(self):
         return self.name
