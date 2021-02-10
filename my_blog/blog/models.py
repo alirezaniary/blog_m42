@@ -7,8 +7,8 @@ from django.core.validators import MinLengthValidator
 class Article(models.Model):
     is_active = models.BooleanField('نمایش عمومی؟', default=True)
     is_valid = models.BooleanField('تایید شده؟', default=False)
-    pub_date = models.DateField('تاریخ انتشار', auto_now_add=True)
-    val_date = models.DateField('تاریخ تایید', null=True, blank=True)
+    pub_date = models.DateTimeField('زمان انتشار', auto_now_add=True)
+    val_date = models.DateTimeField('زمان تایید', null=True, blank=True)
     img_path = models.ImageField('محل ذخیره تصویر', upload_to='%Y/%m/%d/')
     title = models.CharField('عنوان مقاله', max_length=150)
     text = models.TextField('متن مقاله', validators=[MinLengthValidator(300)])
@@ -29,8 +29,8 @@ class Article(models.Model):
 class Comment(models.Model):
     text = models.TextField('متن نظر', )
     is_valid = models.BooleanField('تایید شده؟', default=False)
-    pub_date = models.DateField('تاریخ انتشار', auto_now_add=True)
-    val_date = models.DateField('تاریخ تایید', null=True, blank=True)
+    pub_date = models.DateTimeField('زمان انتشار', auto_now_add=True)
+    val_date = models.DateTimeField('زمان تایید', null=True, blank=True)
     user = models.ForeignKey('BlogUser', on_delete=models.CASCADE,
                              related_name='comments', verbose_name='نویسنده')
     validator = models.ForeignKey('BlogUser', on_delete=models.PROTECT, null=True,
