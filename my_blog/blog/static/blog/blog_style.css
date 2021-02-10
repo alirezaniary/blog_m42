@@ -110,3 +110,13 @@ body {
 .h-165{
 	height: 165px;
 }
+
+#tag-input{
+  outline: 0;
+  border-width: 0 0 2px;
+  border-color: gray
+}
+#tag-input:focus {
+  border-color: green
+}
+

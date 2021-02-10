@@ -29,6 +29,9 @@ var currentScrollPos = window.pageYOffset;
 }
 
 
+
+
+
 $('#id_text').keypress(function(event){
     var keycode = (event.keyCode ? event.keyCode : event.which);
     if(keycode == '13'){
@@ -59,6 +62,49 @@ $('#continue').on('click', function(e){
   }
 
 });
+
+
+$('#tag-input').keypress(function(event){
+    var keycode = (event.keyCode ? event.keyCode : event.which);
+    if(keycode == '13'){
+    	event.preventDefault()
+    	var tagValue = $(this).val()
+    	$(this).val("")
+    	$('<span class="tag-card badge rounded-pill bg-secondary p-2 m-2">' + tagValue + '</span>')
+				.css('cursor', 'pointer')
+				.hover(function(){$(this).addClass('shadow');}, function(){$(this).removeClass('shadow');})
+				.click(function(){$('#id_tag option:contains(' + $(this).text() + ')').remove();
+								  $(this).remove();})
+				.insertBefore($(this));
+		$.post('/api/tag/',{tag: tagValue,
+							csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val()},
+		function(data){
+			$('<option value=' + data.id + '>' + data.name + '</option>')
+					.appendTo('#id_tag')
+			
+		
+		}
+		);
+		}});
+		
+$('#tag-input').keyup(function(event){
+			var keycode = (event.keyCode ? event.keyCode : event.which);
+			if(keycode>=37 && keycode<=40){
+			console.log('salam chetory')}else{
+			$('#datalistOptions').empty();
+			$.getJSON('/api/tag/',{tag: $(this).val()},
+			function(data){
+				for(option of data){
+					$('<option value=' + option.name + ' >')
+					.appendTo('#datalistOptions')
+				}
+
+  			})}
+
+});
+
+
+
 
 $('#back').on('click', function(event){  
     $('.new-page1').show();
@@ -94,5 +140,5 @@ infoArea.textContent = fileName;
 }
 
 
-console.log('hi')
+console.log('hdi')
 });
