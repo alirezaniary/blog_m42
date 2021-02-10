@@ -15,9 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from blog.apis import tag_suggestion
+
 
 urlpatterns = [
+	#path('', include(router.urls)),
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
     path('', include('blog.urls')),
+    path('api/tag/', tag_suggestion)
 ]
