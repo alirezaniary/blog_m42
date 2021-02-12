@@ -21,13 +21,19 @@ class Article(models.Model):
         'Topic', on_delete=models.PROTECT, verbose_name='دسته بندی')
     user_liked = models.ManyToManyField(
         'BlogUser', through='ArticleLike', related_name='alikes', verbose_name='پسند')
-
+    
+    def get_likes(self):
+        return self.user_liked.through.objects.filter(is_like=True).count()
+    
+    def get_dislikes(self):
+        return self.user_liked.through.objects.filter(is_like=False).count()
+            
     def __str__(self):
         return self.title
 
 
 class Comment(models.Model):
-    text = models.TextField('متن نظر', )
+    text = models.CharField('متن نظر', max_length=200)
     is_valid = models.BooleanField('تایید شده؟', default=False)
     pub_date = models.DateTimeField('زمان انتشار', auto_now_add=True)
     val_date = models.DateTimeField('زمان تایید', null=True, blank=True)
@@ -41,7 +47,13 @@ class Comment(models.Model):
                                     blank=True, related_name='response', verbose_name='پاسخ به')
     uesr_liked = models.ManyToManyField(
         'BlogUser', through='CommentLike', related_name='clikes', verbose_name='پسند')
-
+    
+    def get_likes(self):
+        return self.user_liked.through.objects.filter(is_like=True).count()
+    
+    def get_dislikes(self):
+        return self.user_liked.through.objects.filter(is_like=False).count()
+            
     def __str__(self):
         return self.text
 
@@ -98,9 +110,9 @@ class ArticleLike(models.Model):
             models.UniqueConstraint(
                 fields=['article', 'user'], name='article_like')
         ]
-
+    
     def __str__(self):
-        return self.user + '، ' + self.article + "پسندید." if self.is_like else 'نپسندید.'
+        return self.user.username + '، ' + self.article.title + ("پسندید." if self.is_like else 'نپسندید.')
 
 
 class CommentLike(models.Model):
@@ -115,9 +127,10 @@ class CommentLike(models.Model):
             models.UniqueConstraint(
                 fields=['comment', 'user'], name='comment_like')
         ]
-
+        
+    
     def __str__(self):
-        return self.user + '، ' + self.comment + "پسندید." if self.is_like else 'نپسندید.'
+        return self.user.username + '، ' + self.comment.text + ("پسندید." if self.is_like else 'نپسندید.')
 
 
 class Follow(models.Model):
@@ -132,7 +145,7 @@ class Follow(models.Model):
         ]
 
     def __str__(self):
-        return self.user + '، ' + self.author + "را دنبال کرد."
+        return self.user.username + '، ' + self.author.username + "را دنبال کرد."
 
 
 class Bookmark(models.Model):
@@ -148,4 +161,4 @@ class Bookmark(models.Model):
         ]
 
     def __str__(self):
-        return self.user + '، ' + self.article + "را نشان کرد."
+        return self.user.username + '، ' + self.article.title + "را نشان کرد."
