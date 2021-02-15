@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect, get_object_or_404
 # from django.contrib.auth.forms import UserCreationForm
-from .forms import SignUpForm, ArticleCreationForm
+from .forms import SignUpForm, ArticleCreationForm, CommentForm
 from django.views import generic
 from .models import BlogUser, Article, Topic
 
@@ -32,37 +32,56 @@ def sign_up(request):
 
 def new_article(request):
     if request.method == 'POST':
-        form = ArticleCreationForm(request.POST, request.FILES)
+        article_form = ArticleCreationForm(request.POST, request.FILES)
 
-        if form.is_valid():
-            article = form.save(commit=False)
+        if article_form.is_valid():
+            article = article_form.save(commit=False)
             article.author_id = request.user.bloguser.id
             article.save()
-            form.save_m2m()
+            article_form.save_m2m()
             return redirect('blog:article',
             				article_id=article.id,
             				username=request.user.username)
         else:
-            render(request, 'new_article.html', {'form': form,
+            render(request, 'new_article.html', {'form': article_form,
                                                 'topics': topics,
                                                 })
-    else:
-        form = ArticleCreationForm()
-    return render(request, 'new_article.html', {'form': form,
+    elif request.method == 'GET':
+        article_form = ArticleCreationForm()
+    return render(request, 'new_article.html', {'form': article_form,
                                                 'topics': topics,
 
                                                 })
 
 
 def show_article(request, username, article_id):
-    article = get_object_or_404(
-        Article, pk=article_id, author__username=username)
-    user = get_object_or_404(BlogUser, username=username)
-    article_count = user.published.filter(is_valid=True).count()
-    follower_count = user.followedBy.count()
-    return render(request, 'show_article.html', {'blog_user': user, 
-                                                 'article': article,
-                                                 'article_count': article_count,
-                                                 'follower_count': follower_count,
-                                                 'topics': topics,
-                                                 })
+	article = get_object_or_404(
+	    Article, pk=article_id, author__username=username)
+	author = article.author
+	article_count = author.published.filter(is_valid=True).count()
+	follower_count = author.followedBy.count()
+	comment_form = CommentForm()
+	return render(request, 'show_article.html', {'author': author, 
+	                                             'article': article,
+	                                             'article_count': article_count,
+	                                             'follower_count': follower_count,
+	                                             'topics': topics, 
+	                                             'form': comment_form,
+	                                             'data': {'article': article.id,
+	                                                      'user': request.user.bloguser.id}
+	                                             })
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+

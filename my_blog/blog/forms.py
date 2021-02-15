@@ -30,3 +30,11 @@ class ArticleCreationForm(ModelForm):
 				  'topic', 
 				  'is_active', 
 				  'is_valid')
+
+
+class CommentForm(ModelForm):
+	class Meta:
+		model = Comment
+		fields = ('text',)
+
+

@@ -1,6 +1,7 @@
 {% extends 'index.html' %}
 {% block title %} مقاله جدید {% endblock %}
 {% load bootstrap5 %}
+{% load static %} 
 {% block content %}
 
 {% if error %} 
@@ -101,3 +102,4 @@
 </div>
 
 {% endblock %}
+{% block script %}<script src="{% static 'blog/new_article_script.js' %}"></script>{% endblock %}

@@ -114,9 +114,10 @@
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"
         crossorigin="anonymous"></script>
-    <script src="{% static 'blog/blog_script.js' %}"></script>
+    <script src="{% static 'blog/main_script.js' %}"></script>
     <script src="{% static 'blog/dark-mode-switch.js' %}"></script>
-    
+    {% block script %}{% endblock %}
+    {{ data|json_script:"json" }}
 </body>
 
 </html>
