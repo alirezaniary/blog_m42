@@ -27,6 +27,26 @@ class Article(models.Model):
     
     def get_dislikes(self):
         return self.user_liked.through.objects.filter(is_like=False).count()
+    
+    def user_like_status(self, user):
+        try:
+            obj = self.user_liked.through.objects.get(user=user)
+            if obj.is_like == True:
+                return {'did_like': True, 
+                		'is_like': True, 
+		        		'like_count': self.get_likes(), 
+		        		'dislike_count': self.get_dislikes()}
+            else:
+                return {'did_like': True, 
+                		'is_like': False, 
+		        		'like_count': self.get_likes(), 
+		        		'dislike_count': self.get_dislikes()}
+        except ArticleLike.DoesNotExist:
+            return {'did_like': False, 
+            		'is_like': False, 
+            		'like_count': self.get_likes(), 
+            		'dislike_count': self.get_dislikes()}
+
             
     def __str__(self):
         return self.title
