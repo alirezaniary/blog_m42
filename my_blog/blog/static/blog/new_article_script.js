@@ -1,37 +1,6 @@
+
 $(document).ready(function () {
-$(window).scroll(function () {
-  var s = $(window).scrollTop(),
-        duc = $(document).height(),
-        c = $(window).height();
-        scrollPercent = (s / (duc-c)) * 100;
-        var position = scrollPercent;
-
-   $("#progressbar").attr('style', 'width: ' + position + '%; transition: none;');
-
-});
-
-var prevScrollpos = window.pageYOffset;
-window.onscroll = function() {
-var currentScrollPos = window.pageYOffset;
-  if (prevScrollpos > currentScrollPos) {
-    document.getElementById("navbar").style.top = "0";
-    $('.dropdown-menu').removeClass('d-none')
-  } else {
-    document.getElementById("navbar").style.top = -$('#navbar').outerHeight() + 'px';
-    $('.dropdown-menu').addClass('d-none')
-  }
-  if (prevScrollpos < currentScrollPos) {
-    document.getElementById("footer").style.bottom = "0";
-  } else {
-    document.getElementById("footer").style.bottom = -$('#footer').outerHeight() + 'px';
-  }
-  prevScrollpos = currentScrollPos;
-}
-
-
-
-
-
+// article writing text area resizing
 $('#id_text').keypress(function(event){
     var keycode = (event.keyCode ? event.keyCode : event.which);
     if(keycode == '13'){
@@ -46,7 +15,8 @@ $('#id_text').keypress(function(event){
 
 
 
-
+// new article page1 validation
+// ToDo must include min length 300
 $('#continue').on('click', function(e){
   var validator = $('#new-form').validate({
   messages: {
@@ -64,6 +34,9 @@ $('#continue').on('click', function(e){
 });
 
 
+
+// tag suggestion key events and ajax
+// ToDo refactor to seperate functions
 $('#tag-input').keypress(function(event){
     var keycode = (event.keyCode ? event.keyCode : event.which);
     if(keycode == '13'){
@@ -86,7 +59,8 @@ $('#tag-input').keypress(function(event){
 		}
 		);
 		}});
-		
+
+
 $('#tag-input').keyup(function(event){
 			var keycode = (event.keyCode ? event.keyCode : event.which);
 			if(keycode>=37 && keycode<=40){
@@ -104,14 +78,14 @@ $('#tag-input').keyup(function(event){
 });
 
 
-
-
+// back key functinality new article page2
 $('#back').on('click', function(event){  
     $('.new-page1').show();
     $('.new-page2').hide();
 });
 
 
+// image preview new
 function readURL(input) {
   if (input.files && input.files[0]) {
       var reader = new FileReader();
