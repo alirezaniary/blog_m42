@@ -23,14 +23,14 @@ class Article(models.Model):
         'BlogUser', through='ArticleLike', related_name='alikes', verbose_name='پسند')
     
     def get_likes(self):
-        return self.user_liked.through.objects.filter(is_like=True).count()
+        return self.user_liked.through.objects.filter(is_like=True, article=self).count()
     
     def get_dislikes(self):
-        return self.user_liked.through.objects.filter(is_like=False).count()
+        return self.user_liked.through.objects.filter(is_like=False, article=self).count()
     
     def user_like_status(self, user):
         try:
-            obj = self.user_liked.through.objects.get(user=user)
+            obj = ArticleLike.objects.get(user=user, article=self)
             if obj.is_like == True:
                 return {'did_like': True, 
                 		'is_like': True, 
@@ -65,19 +65,41 @@ class Comment(models.Model):
         'Article', on_delete=models.CASCADE, verbose_name='مقاله')
     response_to = models.ForeignKey('self', on_delete=models.CASCADE, null=True,
                                     blank=True, related_name='response', verbose_name='پاسخ به')
-    uesr_liked = models.ManyToManyField(
+    user_liked = models.ManyToManyField(
         'BlogUser', through='CommentLike', related_name='clikes', verbose_name='پسند')
     
     def get_likes(self):
-        return self.user_liked.through.objects.filter(is_like=True).count()
+        return self.user_liked.through.objects.filter(is_like=True, comment=self).count()
     
     def get_dislikes(self):
-        return self.user_liked.through.objects.filter(is_like=False).count()
+        return self.user_liked.through.objects.filter(is_like=False, comment=self).count()
+    
+    def get_responses(self):
+    	return self.response.all().values_list('text')
             
     def __str__(self):
         return self.text
 
-
+    def user_like_status(self, user):
+        try:
+            obj = CommentLike.objects.get(user=user, comment=self)
+            if obj.is_like == True:
+                return {'did_like': True, 
+                		'is_like': True, 
+		        		'like_count': self.get_likes(), 
+		        		'dislike_count': self.get_dislikes()}
+            else:
+                return {'did_like': True, 
+                		'is_like': False, 
+		        		'like_count': self.get_likes(), 
+		        		'dislike_count': self.get_dislikes()}
+        except CommentLike.DoesNotExist:
+            return {'did_like': False, 
+            		'is_like': False, 
+            		'like_count': self.get_likes(), 
+            		'dislike_count': self.get_dislikes()}
+            		
+            		
 class BlogUser(User):
 
     def user_directory_path(self, filename):
@@ -100,6 +122,13 @@ class BlogUser(User):
 
     def full_name(self):
         return self.first_name + ' ' + self.last_name
+        
+    def user_follow_status(self, user):
+        try:
+        	obj = Follow.objects.get(author=self, user=user)
+        	return {'follow': True, 'followers': self.followedBy.count()}
+        except Follow.DoesNotExist:
+        	return {'follow': False, 'followers': self.followedBy.count()}
 
 
 class Tag(models.Model):

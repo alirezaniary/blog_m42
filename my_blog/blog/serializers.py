@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Tag, Comment
+from .models import Tag, Comment, Follow
 import json
 
 class TagSerializer(serializers.ModelSerializer):
@@ -13,4 +13,8 @@ class CommentSerializer(serializers.ModelSerializer):
     	model = Comment
     	fields = ['id', 'text', 'user', 'article', 'response_to']
 
-       
+
+class FollowSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Follow
+        fields = ['id', 'user', 'author']

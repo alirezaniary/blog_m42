@@ -8,9 +8,10 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('sign_up/', views.sign_up, name='sign_up'),
     path('new/', views.new_article, name='new_article'),
-    path('@<username>/<article_id>/', views.show_article, name='article'),
-    path('api/', include('blog.api_urls'))
-
+    path('@<str:username>/<int:article_id>/', views.show_article, name='article'),
+    path('api/', include('blog.api_urls')),
+    path('tags/<str:tag>/', views.show_tag, name='tags'),
+    path('topics/<str:topic>/', views.show_topic, name='topics'),
 ]
 
 

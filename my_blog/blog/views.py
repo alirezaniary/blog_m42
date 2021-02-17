@@ -58,6 +58,7 @@ def show_article(request, username, article_id):
 	article = get_object_or_404(
 	    Article, pk=article_id, author__username=username)
 	author = article.author
+	comments = article.comment_set.filter(response_to=None)
 	article_count = author.published.filter(is_valid=True).count()
 	follower_count = author.followedBy.count()
 	comment_form = CommentForm()
@@ -67,7 +68,9 @@ def show_article(request, username, article_id):
 	                                             'follower_count': follower_count,
 	                                             'topics': topics, 
 	                                             'form': comment_form,
+	                                             'comments': comments,
 	                                             'data': {'article': article.id,
+	                                             		  'author': author.id,	                                             
 	                                                      'user': request.user.bloguser.id}
 	                                             })
 
