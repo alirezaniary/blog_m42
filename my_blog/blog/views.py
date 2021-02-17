@@ -4,12 +4,15 @@ from django.shortcuts import render, redirect, get_object_or_404
 # from django.contrib.auth.forms import UserCreationForm
 from .forms import SignUpForm, ArticleCreationForm, CommentForm
 from django.views import generic
-from .models import BlogUser, Article, Topic
+from .models import BlogUser, Article, Topic, Tag
 
-topics = Topic.objects.all()
+
+
+topic_list = Topic.objects.filter(super_topic=None)
 
 def index(request):
-    return render(request, 'index.html',{'topics': topics,
+    return render(request, 'index.html',{'topic_list': topic_list,
+    									 'article': Article.objects.all(),
                                          })
 
 
@@ -26,7 +29,7 @@ def sign_up(request):
     else:
         form = SignUpForm()
     return render(request, 'sign_up.html', {'form': form,
-                                            'topics': topics
+                                            'topic_list': topic_list
                                             })
 
 
@@ -44,12 +47,12 @@ def new_article(request):
             				username=request.user.username)
         else:
             render(request, 'new_article.html', {'form': article_form,
-                                                'topics': topics,
+                                                'topic_list': topic_list,
                                                 })
     elif request.method == 'GET':
         article_form = ArticleCreationForm()
     return render(request, 'new_article.html', {'form': article_form,
-                                                'topics': topics,
+                                                'topic_list': topic_list,
 
                                                 })
 
@@ -66,7 +69,7 @@ def show_article(request, username, article_id):
 	                                             'article': article,
 	                                             'article_count': article_count,
 	                                             'follower_count': follower_count,
-	                                             'topics': topics, 
+	                                             'topic_list': topic_list, 
 	                                             'form': comment_form,
 	                                             'comments': comments,
 	                                             'data': {'article': article.id,
@@ -74,7 +77,20 @@ def show_article(request, username, article_id):
 	                                                      'user': request.user.bloguser.id}
 	                                             })
 
-	
+def show_tag(request, tag_name):
+	tag = get_object_or_404(Tag, name=tag_name)
+	return render(request, 'index.html',{'topic_list': topic_list,
+    									 'article': Article.objects.filter(tag__name=tag_name),
+    									 'title': tag
+                                         })
+
+
+def show_topic(request, topic_name):
+	topic = get_object_or_404(Topic, name=topic_name)
+	return render(request, 'index.html',{'topic_list': topic_list,
+    									 'article': Article.objects.filter(topic__name=topic_name),
+    									 'title': topic,
+                                         })
 
 
 

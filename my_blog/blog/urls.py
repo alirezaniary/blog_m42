@@ -10,8 +10,8 @@ urlpatterns = [
     path('new/', views.new_article, name='new_article'),
     path('@<str:username>/<int:article_id>/', views.show_article, name='article'),
     path('api/', include('blog.api_urls')),
-    path('tags/<str:tag>/', views.show_tag, name='tags'),
-    path('topics/<str:topic>/', views.show_topic, name='topics'),
+    path('tags/<str:tag_name>/', views.show_tag, name='tags'),
+    path('topics/<str:topic_name>/', views.show_topic, name='topics'),
 ]
 
 

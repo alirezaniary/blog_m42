@@ -22,6 +22,9 @@ class Article(models.Model):
     user_liked = models.ManyToManyField(
         'BlogUser', through='ArticleLike', related_name='alikes', verbose_name='پسند')
     
+    class Meta:
+    	ordering = ['-pub_date']
+    
     def get_likes(self):
         return self.user_liked.through.objects.filter(is_like=True, article=self).count()
     
@@ -141,7 +144,7 @@ class Tag(models.Model):
 class Topic(models.Model):
     name = models.CharField('دسته بندی', max_length=25)
     super_topic = models.ForeignKey(
-        'self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='فرا مجموعه')
+        'self', on_delete=models.SET_NULL, null=True, blank=True, related_name='subtopics', verbose_name='فرا مجموعه')
 
     def __str__(self):
         return self.name

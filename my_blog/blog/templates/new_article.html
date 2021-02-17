@@ -16,13 +16,13 @@
 
 	<div class="new-page1">
 		<div class="form-floating mb-3 ">
-			<input type="text " name="{{ form.title.name }}" maxlength="150" required id="id_title" class="form-control" value="{{ form.title.data }}" placeholder="">
+			<input type="text " name="{{ form.title.name }}" maxlength="150" required id="id_title" class="form-control" value="{% if form.title.data != None %}{{ form.title.data }}{% endif %}" placeholder="">
 			<label class="keep-right" for="id_title">عنوان کوتاه نوشته ات رو جذاب می کنه</label>
 			
 		</div>
 		{{ form.text.errors }}
 		<div class="form-floating">
-			<textarea class="form-control h-100 " name="{{ form.text.name }}" row="1" rows="5" required id="id_text" placeholder="">{{ form.text.data }}</textarea>
+			<textarea class="form-control h-100 " name="{{ form.text.name }}" row="1" rows="5" required id="id_text" placeholder="">{% if form.text.data != None %}{{ form.text.data }}{% endif %}</textarea>
 			<label class="keep-right" for="id_text">نوشتن رو شروع کن، بذار افکار جریان پیدا کنند</label>
 			
 		</div>

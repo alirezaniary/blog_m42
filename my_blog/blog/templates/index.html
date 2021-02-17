@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}نقطه ویرگول؛ {% endblock %}</title>
+    <title>{% block title %}{% if title %}{{ title }}{% else %}نقطه ویرگول؛ {% endif %}{% endblock %}</title>
     <link rel="shortcut icon" href="{% static 'blog/favicon.ico' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
@@ -35,8 +35,8 @@
                         <a class="nav-link dropdown-toggle caret-off" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false"> طبقه بندی مطالب </a>
                         <ul class="dropdown-menu " aria-labelledby="navbarDropdown">
-                            {% for topic in topics %} 
-                            <li><a class="dropdown-item d-flex justify-content-start" href="#">{{ topic }}</a></li> 
+                            {% for topic in topic_list %} 
+                            <li><a class="dropdown-item d-flex justify-content-start" href="/topics/{{topic}}">{{ topic }}</a></li> 
                             {% endfor %} 
                         </ul>
                     </li>
@@ -81,6 +81,39 @@
     </nav> {% endblock %} 
     <div class="container pt-container"> 
         {% block content %}
+       {% if title %}<h1 class="p-3 ">{{ title.name }}/{% endif %}{% for sub in title.subtopics.all %}
+        <a class="fs-4" href="/topics/{{sub}}"> {{sub}} </a>
+		{% if not forloop.last %}
+		<span class="fs-4">/</apan>
+		{% endif %}
+       {% endfor %}
+       {% for art in article %} 
+        </h1>
+        <div class="card mb-3" style="max-width: 1000px;">
+		  <div class="row g-0">
+			<div class="col-md-4">
+			  <img src="/media/{{ art.img_path }} " width="300">
+			</div>
+			<div class="col-md-8">
+			  <div class="card-body">
+				<a href="/@{{art.author.username}}/{{art.id}}"><h5 class="card-title">{{ art.title }}</h5></a>
+				<p class="card-text text-truncate">{{ art.text }}</p>
+				<p class="card-text"><small class="text-muted">{{ art.pub_date | timesince }} پیش</small></p>
+				{% for tag in art.tag.all %}
+				<a href="/tags/{{ tag }}/" class="tag-card badge rounded-pill bg-light p-2 m-2 text-decoration-none text-dark">	
+				{{ tag }}
+				</a>	
+				{% if not forloop.last %}
+				<span>/</apan>
+				{% endif %}
+				{% endfor %}
+			  </div>
+			</div>
+		  </div>
+		</div>
+        
+        {% endfor %}
+        
         {% endblock %} 
     </div>
     <footer id="footer" class="footer mt-auto py-3 bg-light fixed-bottom d-flex justify-content-between align-items-center"> 
