@@ -65,17 +65,19 @@ def show_article(request, username, article_id):
 	article_count = author.published.filter(is_valid=True).count()
 	follower_count = author.followedBy.count()
 	comment_form = CommentForm()
-	return render(request, 'show_article.html', {'author': author, 
-	                                             'article': article,
-	                                             'article_count': article_count,
-	                                             'follower_count': follower_count,
-	                                             'topic_list': topic_list, 
-	                                             'form': comment_form,
-	                                             'comments': comments,
-	                                             'data': {'article': article.id,
-	                                             		  'author': author.id,	                                             
-	                                                      'user': request.user.bloguser.id}
-	                                             })
+	return render(request,
+				 'show_article.html',
+				 {'author': author, 
+				  'article': article,
+				  'article_count': article_count,
+				  'follower_count': follower_count,
+				  'topic_list': topic_list, 
+				  'form': comment_form,
+				  'comments': comments,
+				  'data': {'article': article.id,
+				  		   'author': author.id,
+				  		   'user': request.user.bloguser.id if request.user.is_authenticated else None}
+				 })
 
 def show_tag(request, tag_name):
 	tag = get_object_or_404(Tag, name=tag_name)

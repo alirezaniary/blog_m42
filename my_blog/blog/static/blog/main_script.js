@@ -8,10 +8,10 @@ window.onscroll = function() {
 var currentScrollPos = window.pageYOffset;
   if (prevScrollpos > currentScrollPos) {
     document.getElementById("navbar").style.top = "0";
-    $('.dropdown-menu').removeClass('d-none')
+    $('.dropdown-menu-nav').removeClass('d-none')
   } else {
     document.getElementById("navbar").style.top = -$('#navbar').outerHeight() + 'px';
-    $('.dropdown-menu').addClass('d-none')
+    $('.dropdown-menu-nav').addClass('d-none')
   }
   if (prevScrollpos < currentScrollPos) {
     document.getElementById("footer").style.bottom = "0";

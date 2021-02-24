@@ -1,0 +1,89 @@
+{% extends 'index.html' %} 
+{% load static %} 
+{% block title %} پروفایل {{ user.username }} {% endblock %}
+
+{% block content %}
+<div class="d-flex" >
+	<aside id="profile-bar" class="side col-3 card">
+	
+	<div class="card text-white bg-secondary mb-3" style="max-width: 18rem;">
+
+  <div class="card-body">
+
+		<img class="w-100 " src="/media/{{ user.bloguser.img_path }}"/>
+    <p class="card-text p-1">{{ user.bloguser.bio }}</p>
+  </div>
+</div>
+	
+	
+		<ul class="list-group p-0">
+  		{% if user.bloguser.is_author %}
+  		 <a href="{% url 'blog:new_article' %}" class="list-group-item d-flex justify-content-center align-items-center list-group-item-action active">
+		نوشتن مقاله جدید
+
+  		</a>
+  		
+  			 <a href="#" class="list-group-item d-flex justify-content-between align-items-center list-group-item-action">
+			مقالات شما
+			<span class="badge bg-primary rounded-pill">{{ user.bloguser.published.count }}</span>
+  		</a>
+  		{% endif %}
+    		{% if user.bloguser.is_editor %}
+    		
+    			<div class="dropstart ">
+				  <a type="button" class="btn list-group-item d-flex justify-content-between align-items-center list-group-item-action " data-bs-toggle="dropdown">
+					مقالات تایید نشده
+					<span class="badge bg-primary rounded-pill">{{ art_count }}</span>
+				  </a>
+				  <ul class="dropdown-menu p-0">
+				  {% for topic in art_per_topic %}
+					{% if topic.count > 0 %}
+                       <a href="" class=" list-group-item d-flex justify-content-between align-items-center list-group-item-action text-decoration-none text-muted">
+                       {{ topic.name }}
+                       <span class="badge bg-primary rounded-pill">{{ topic.count}}</span>
+                       </a> 
+                       {% endif %}
+                    {% endfor %}
+				  </ul>
+				</div>
+						
+						
+					<div class="dropstart ">
+				  <a type="button" class="btn list-group-item d-flex justify-content-between align-items-center list-group-item-action " data-bs-toggle="dropdown">
+					نظرات تایید نشده
+					<span class="badge bg-primary rounded-pill">{{ com_count }}</span>
+				  </a>
+				  <ul class="dropdown-menu p-0">
+				  {% for topic in com_per_topic %}
+					{% if topic.count > 0 %}
+                       <a href="" class=" list-group-item d-flex justify-content-between align-items-center list-group-item-action text-decoration-none text-muted">
+                       {{ topic.name }}
+                       <span class="badge bg-primary rounded-pill">{{ topic.count}}</span>
+                       </a> 
+                       {% endif %}
+                    {% endfor %}
+				  </ul>
+				</div>
+								
+	  		{% endif %}
+	  		<a href="#" class="list-group-item d-flex justify-content-between align-items-center list-group-item-action">
+			مقالات نشان شده
+			<span class="badge bg-primary rounded-pill">{{ user.bloguser.bookmarked_articles.count }}</span>
+		  </a>
+		  <a href="#" class="list-group-item d-flex justify-content-between align-items-center list-group-item-action">
+			نویسندگانی که دنبال می کنید
+			<span class="badge bg-primary rounded-pill">{{ user.bloguser.followers.count }}</span>
+		  </a>
+		  <a href="#" class="list-group-item d-flex justify-content-between align-items-center list-group-item-action">
+			مقالات پسندیده شده
+			<span class="badge bg-primary rounded-pill">{{ user.bloguser.alikes.count }}</span>
+  		</a>
+		</ul>
+	</aside>
+	<div class="w-100">
+		
+		
+
+	</div>
+</div>
+{% endblock %}

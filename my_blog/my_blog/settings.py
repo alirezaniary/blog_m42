@@ -127,7 +127,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 MEDIA_ROOT = 'blog/media/'
-LOGIN_REDIRECT_URL = 'blog:index'
+#LOGIN_REDIRECT_URL = 'blog:index'
 
 
 REST_FRAMEWORK = {

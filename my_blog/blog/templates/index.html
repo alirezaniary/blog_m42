@@ -34,7 +34,7 @@
                     <li class="nav-item dropdown d-flex flex-column align-items-start">
                         <a class="nav-link dropdown-toggle caret-off" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false"> طبقه بندی مطالب </a>
-                        <ul class="dropdown-menu " aria-labelledby="navbarDropdown">
+                        <ul class="dropdown-menu dropdown-menu-nav" aria-labelledby="navbarDropdown">
                             {% for topic in topic_list %} 
                             <li><a class="dropdown-item d-flex justify-content-start" href="/topics/{{topic}}">{{ topic }}</a></li> 
                             {% endfor %} 
@@ -50,10 +50,10 @@
                                     d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z" />
                             </svg>
                         </a>
-                        <ul class="dropdown-menu " aria-labelledby="navbarDropdown">
+                        <ul class="dropdown-menu dropdown-menu-nav"  aria-labelledby="navbarDropdown">
                         {% if user.is_authenticated %}
                             <li class="nav-item ">
-                                <span class="nav-link d-flex justify-content-start"> {{ user.username }} </span>
+                                <a href="{% url 'profile' %}" class="nav-link d-flex justify-content-start"> {{ user.username }} </a>
                             </li>
                             <li class="nav-item ">
                                 <a class="nav-link d-flex justify-content-start"
