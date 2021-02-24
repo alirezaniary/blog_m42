@@ -1,6 +1,4 @@
 $(document).ready(function () {
-	// progressbar measures height of article
-	// ToDo exclude comment height
 	$(window).scroll(function () {
 		var s = $(window).scrollTop(),
 			d = $(document).height() - $('.comment').height(),
@@ -9,32 +7,28 @@ $(document).ready(function () {
 		var position = scrollPercent;
 		$("#progressbar").attr('style', 'width: ' + position + '%; transition: none;');
 	});
-	
+
+
 	function renderLike (status){
-		if(status.did_like){
+		if(status.id){
 			if(status.is_like){
 				$('.like, .dislike-fill').hide()
 				$('.like-fill, .dislike').show()
-				$('#like-count').text(status.like_count)
-				$('#dislike-count').text(status.dislike_count)
 			}
 			else{
 				$('.dislike, .like-fill').hide()
 				$('.dislike-fill, .like').show()
-				$('#like-count').text(status.like_count)
-				$('#dislike-count').text(status.dislike_count)
 			}
 		}
 		else{
 			$('.like, .dislike').show()
 			$('.like-fill, .dislike-fill').hide()
-			$('#like-count').text(status.like_count)
-			$('#dislike-count').text(status.dislike_count)
 		}
 	}
-	
+
+
 	function renderBookmark (status){
-		if(status.bookmarked){
+		if(status.id){
 			$('.bookmark').hide()
 			$('.bookmark-fill').show()
 		}
@@ -43,46 +37,112 @@ $(document).ready(function () {
 			$('.bookmark-fill').hide()
 		}
 	}
-	
-	
+
+
 	function renderComment (status){
 		$('#comment-temp').show().children('div').children().text(status.text)
 	}
-	
+
+
 	var input_data = JSON.parse($('#json').text());
-	
-	$.getJSON('/api/like/', input_data, function(status){
+
+
+	$.get('/api/like/0/', input_data, function(status){
 		renderLike(status);
 	});
-	
-	$.getJSON('/api/bookmark/', input_data, function(status){
+
+
+	$.get('/api/bookmark/0/', input_data, function(status){
 		renderBookmark(status);
 	});
-			
+
+
+	function changeCount(obj, num){
+		obj.text(+obj.text() + num)
+	}
+
+	
+	function sendAJAX(inputData, method, like){
+		$.ajax(`/api/like/0/?user=${inputData.user}&article=${inputData.article}`,
+			{
+			headers: {'X-CSRFTOKEN': inputData.csrfmiddlewaretoken},
+			type: method,
+			data: inputData,
+			success: function(result,status,xhr) {
+				renderLike(result || status);
+				if(result){
+					changeCount($(like ? '#like-count' : '#dislike-count'), 1)
+				 	changeCount($(like ? '#dislike-count' : '#like-count'), -1)
+				}
+				else{
+					changeCount($(like ? '#like-count' : '#dislike-count'), -1)
+				}
+			}
+			});
+	}
+	
+	
 	
 	input_data.csrfmiddlewaretoken = $('[name=csrfmiddlewaretoken]').val();
 
 	$('#like-inline, #like-side').click(function(){
-		input_data.like = 1
-
-		$.post('/api/like/', input_data, function(status){
-			renderLike(status);	
-		});
+		input_data.is_like = true
+		
+		if($('.like-fill').css('display') == 'none'){
+			if($('.dislike-fill').css('display') == 'none'){
+				$.post('/api/like/', input_data, function(status){
+					renderLike(status)
+					changeCount($('#like-count'), 1)
+					});	
+			}
+			else{
+				 sendAJAX(input_data, 'PUT', true)
+				 
+				}
+		}
+		else{
+			sendAJAX(input_data, 'DELETE', true)			
+			}
 	});
 	
 	$('#dislike-inline, #dislike-side').click(function(){
-		input_data.like = 0
-
-		$.post('/api/like/', input_data, function(status){
-			renderLike(status);	
-		});
+		input_data.is_like = false
+		if($('.dislike-fill').css('display') == 'none'){
+			if($('.like-fill').css('display') == 'none'){
+				$.post('/api/like/', input_data, function(status){
+					renderLike(status)
+					changeCount($('#dislike-count'), 1)
+					});	
+			}
+			else{
+				 sendAJAX(input_data, 'PUT', false)
+				}
+		}
+		else{
+			sendAJAX(input_data, 'DELETE', false)
+			}
 	});
 	
-	$('.bookmark, .bookmark-fill').click(function(){
+	
+	$('.bookmark').click(function(){
 		$.post('/api/bookmark/', input_data, function(status){
 			renderBookmark(status)
 		});
 	});
+	
+	$('.bookmark-fill').click(function(){
+		$.ajax(`/api/bookmark/0/?user=${input_data.user}&article=${input_data.article}`,
+			{
+			headers: {'X-CSRFTOKEN': input_data.csrfmiddlewaretoken},
+			type: 'DELETE',
+			data: input_data,
+			success: function(result,status,xhr) {
+				renderBookmark(status);
+				}
+			});	
+	});
+	
+	
 	
 	$('.comment-btn, .response-btn').click(function(e){
 		e.preventDefault()
@@ -101,60 +161,119 @@ $(document).ready(function () {
 	
 
 	function renderClike (status){
-		if(status.did_like){
+		if(status.id){
+			id = status.comment
 			if(status.is_like){
-				$(`#p-${status.id} .clike, #p-${status.id} .disclike-fill`).hide()
-				$(`#p-${status.id} .clike-fill, #p-${status.id} .disclike`).show()
-				$(`#p-${status.id} #clike-count`).text(status.like_count)
-				$(`#p-${status.id} #disclike-count`).text(status.dislike_count)
+				$(`#p-${id} .clike, #p-${id} .disclike-fill`).hide()
+				$(`#p-${id} .clike-fill, #p-${id} .disclike`).show()
 			}
 			else{
-				$(`#p-${status.id} .disclike, #p-${status.id} .clike-fill`).hide()
-				$(`#p-${status.id} .disclike-fill, #p-${status.id} .clike`).show()
-				$(`#p-${status.id} #clike-count`).text(status.like_count)
-				$(`#p-${status.id} #disclike-count`).text(status.dislike_count)
+				$(`#p-${id} .disclike, #p-${id} .clike-fill`).hide()
+				$(`#p-${id} .disclike-fill, #p-${id} .clike`).show()
 			}
 		}
 		else{
-			$(`#p-${status.id} .clike, #p-${status.id} .disclike`).show()
-			$(`#p-${status.id} .clike-fill, #p-${status.id} .disclike-fill`).hide()
-			$(`#p-${status.id} #clike-count`).text(status.like_count)
-			$(`#p-${status.id} #disclike-count`).text(status.dislike_count)
+			id = status
+			$(`#p-${id} .clike, #p-${id} .disclike`).show()
+			$(`#p-${id} .clike-fill, #p-${id} .disclike-fill`).hide()
 		}
 	}
 	
+	
+
+	
+	function sendAJAXc(inputData, method, like){
+		id = inputData.comment
+		$.ajax(`/api/clike/0/?user=${inputData.user}&comment=${inputData.comment}`,
+			{
+			headers: {'X-CSRFTOKEN': inputData.csrfmiddlewaretoken},
+			type: method,
+			data: inputData,
+			success: function(result,status,xhr) {
+				status = id
+
+				renderClike(result || status);
+				if(result){
+					changeCount($(like ? `#p-${id} #clike-count` : `#p-${id} #disclike-count`), 1)
+				 	changeCount($(like ? `#p-${id} #disclike-count` : `#p-${id} #clike-count`), -1)
+				}
+				else{
+					changeCount($(like ? `#p-${id} #clike-count` : `#p-${id} #disclike-count`), -1)
+				}
+			}
+			});
+	}
+	
+	
 	$('.clike-inline').click(function(){
-		input_data.like = 1
+		input_data.is_like = true
 		id = $(this).prop('id')
 		input_data.comment = id
-		$.post('/api/clike/', input_data, function(status){
-			status.id = id
-			renderClike(status);	
-		});
+		
+		if($(`#p-${id} .clike-fill`).css('display') == 'none'){
+			if($(`#p-${id} .disclike-fill`).css('display') == 'none'){
+				$.post('/api/clike/', input_data, function(status){
+					renderClike(status)
+					changeCount($(`#p-${id} #clike-count`), 1)
+					});	
+			}
+			else{
+				 sendAJAXc(input_data, 'PUT', true)
+				 
+				}
+		}
+		else{
+			sendAJAXc(input_data, 'DELETE', true)			
+			}
 	});
+	
 	
 	$('.disclike-inline').click(function(){
-		input_data.like = 0
+		input_data.is_like = false
 		id = $(this).prop('id')
 		input_data.comment = id
-		$.post('/api/clike/', input_data, function(status){
-			status.id = id
-			renderClike(status);	
-		});
+		
+		if($(`#p-${id} .disclike-fill`).css('display') == 'none'){
+			if($(`#p-${id} .clike-fill`).css('display') == 'none'){
+				$.post('/api/clike/', input_data, function(status){
+					renderClike(status)
+					changeCount($(`#p-${id} #disclike-count`), 1)
+					});	
+			}
+			else{
+				 sendAJAXc(input_data, 'PUT', false)
+				 
+				}
+		}
+		else{
+			sendAJAXc(input_data, 'DELETE', false)			
+			}
 	});
 	
-	$('#follow, #un-follow').click(function(){
+	
+	
+	$('#follow').click(function(){
 		$.post('/api/follow/', input_data, function(status){
-			if(status.follow){
+			if(status.id){
 				$('#un-follow').show()
 				$('#follow').hide()
-				$('#followers').text(status.followers)
-			}else{
-				$('#un-follow').hide()
-				$('#follow').show()
-				$('#followers').text(status.followers)
+				changeCount($('#followers'), 1)
 			}
 		});
 	});
-console.log('engd')
+	
+	$('#un-follow').click(function(){
+		$.ajax(`/api/follow/0/?user=${input_data.user}&author=${input_data.author}`,
+			{
+			headers: {'X-CSRFTOKEN': input_data.csrfmiddlewaretoken},
+			type: 'DELETE',
+			data: input_data,
+			success: function(result,status,xhr) {
+				$('#un-follow').hide()
+				$('#follow').show()
+				changeCount($('#followers'), -1)
+				}
+			});	
+	});
+console.log('eend')
 });

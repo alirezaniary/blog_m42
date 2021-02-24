@@ -49,7 +49,7 @@ $('#tag-input').keypress(function(event){
 				.click(function(){$('#id_tag option:contains(' + $(this).text() + ')').remove();
 								  $(this).remove();})
 				.insertBefore($(this));
-		$.post('/api/tag/',{tag: tagValue,
+		$.post('/api/tag/',{name: tagValue,
 							csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val()},
 		function(data){
 			$('<option value=' + data.id + '>' + data.name + '</option>')
@@ -66,7 +66,7 @@ $('#tag-input').keyup(function(event){
 			if(keycode>=37 && keycode<=40){
 			console.log('salam chetory')}else{
 			$('#datalistOptions').empty();
-			$.getJSON('/api/tag/',{tag: $(this).val()},
+			$.getJSON('/api/tag/',{name: $(this).val()},
 			function(data){
 				for(option of data){
 					$('<option value=' + option.name + ' >')
@@ -101,12 +101,7 @@ function readURL(input) {
 $('#upload').on('change', function () {
     readURL(input);
 });
-$('#my').click(function(){
-$('<link>').attr('rel','stylesheet')
-  .attr('type','text/css')
-  .attr('href','/static/blog/dark-mode.css')
-  .appendTo('head');})
-console.log('hdi')
+
 
 var input = document.getElementById( 'upload' );
 var infoArea = document.getElementById( 'upload-label' );
@@ -118,4 +113,5 @@ var fileName = input.files[0].name;
 infoArea.textContent = fileName;
 }
 
+console.log('end')
 });
