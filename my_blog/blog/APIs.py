@@ -126,5 +126,3 @@ class ArticleViewSet(mixins.UpdateModelMixin,
 
 
 
-
-
