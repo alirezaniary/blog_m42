@@ -14,5 +14,6 @@ router.register('follow', FollowViewSet)
 urlpatterns = [
 	path('', include(router.urls)),
 	path('tag/', ListCreateTag.as_view()),
+	path('author/<int:pk>/', RetrieveAuthor.as_view()),
 ]
 

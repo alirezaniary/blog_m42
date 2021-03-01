@@ -23,6 +23,13 @@ class ListCreateTag(generics.ListCreateAPIView):
 		return queryset
 
 
+class RetrieveAuthor(generics.RetrieveAPIView):
+	serializer_class = BlogUserSerializer
+	permission_classes = [permissions.IsAuthenticated]
+	queryset = BlogUser.objects.all()
+
+
+
 class ArticleLikeViewSet(mixins.CreateModelMixin,
 						 mixins.UpdateModelMixin,
 						 mixins.DestroyModelMixin,
@@ -84,19 +91,29 @@ class BookmarkViewSet(mixins.CreateModelMixin,
 
 class FollowViewSet(mixins.CreateModelMixin,
 					mixins.DestroyModelMixin,
-					mixins.RetrieveModelMixin,
+					mixins.ListModelMixin,
 					viewsets.GenericViewSet):
 	queryset = Follow.objects.all()
 	serializer_class = FollowSerializer
 	permission_classes = [permissions.IsAuthenticated]
-	
+
+	def get_queryset(self):
+		queryset = Follow.objects.all()
+		try:
+			bloguser = self.request.user.bloguser
+			profile = self.request.query_params.get('profile', None)
+			if profile is not None:
+				return queryset.filter(user=bloguser)
+		except:
+			pass
+
 	def get_object(self):
 		queryset = self.get_queryset()
 		filter = {}
 		for field in ['user', 'author']:
 			filter[field] = self.request.query_params.get(field)
 
-		obj = get_object_or_404(queryset, **filter)		
+		obj = get_object_or_404(Follow, **filter)		
 		self.check_object_permissions(self.request, obj)
 		return obj
 
@@ -104,20 +121,81 @@ class FollowViewSet(mixins.CreateModelMixin,
 class CommentViewSet(mixins.CreateModelMixin,
 					 mixins.UpdateModelMixin,
 					 mixins.ListModelMixin,
-					 mixins.RetrieveModelMixin,
 					 viewsets.GenericViewSet):
 	queryset = Comment.objects.all()
 	serializer_class = CommentSerializer
 	permission_classes = [permissions.IsAuthenticated, ]
-
+	
+	def get_queryset(self):
+		queryset = Comment.objects.all()
+		try:
+			bloguser = self.request.user.bloguser
+			
+			param = {}
+			for field in ['profile', 'editor', 'topic']:
+				param[field] = self.request.query_params.get(field, None)
+			
+			if param['profile'] is not None:
+				return queryset.filter(user=bloguser)
+				
+			elif param['editor'] is not None and bloguser.is_editor:
+				
+				filter = {'is_valid': False}
+				
+				if param['topic']:
+					filter['article__topic'] = param['topic']
+				else:
+					filter['article__topic__isnull'] = False
+				
+				return queryset.filter(**filter)
+			
+		except Exception as e:
+			print(e)
 
 class ArticleViewSet(mixins.UpdateModelMixin,
 					 mixins.ListModelMixin,
-					 mixins.RetrieveModelMixin,
 					 viewsets.GenericViewSet):
 	queryset = Article.objects.all()
 	serializer_class = ArticleSerializer
 	permission_classes = [permissions.IsAuthenticated, ]
+
+	def get_queryset(self):
+		queryset = Article.objects.all()
+		filter = {'is_valid': True, 'is_active': True}
+		try:
+			bloguser = self.request.user.bloguser
+			
+			param = {}
+			for field in ['profile', 'editor', 'topic', 'bookmark', 'liked']:
+				param[field] = self.request.query_params.get(field, None)
+			
+			if param['profile'] is not None:
+				return queryset.filter(author=bloguser)
+				
+			elif param['editor'] is not None and bloguser.is_editor:
+				filter['is_valid'] = False
+				
+				if param['topic']:
+					filter['topic'] = param['topic']
+				else:
+					filter['topic__isnull'] = False
+				return queryset.filter(**filter)
+				
+			elif param['bookmark'] is not None:
+				return queryset.filter(bookmarkedBy=bloguser, **filter)
+				
+			elif param['liked'] is not None:
+				return queryset.filter(user_liked=bloguser, **filter)
+				
+			else:
+				return queryset.filter(**filter)
+				
+		except Exception as e:
+			print(e)
+			return queryset.filter(**filter)
+		
+		
+	
 
 
 
