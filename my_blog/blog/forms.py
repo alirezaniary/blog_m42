@@ -5,20 +5,19 @@ from django.forms import ModelForm
 from .models import *
 
 
-class SignUpForm(ModelForm):
-#	first_name = forms.CharField(max_length=30, required=True, help_text='Required.')
-#	last_name = forms.CharField(max_length=30, required=True, help_text='Required.')
-#	email = forms.EmailField(max_length=254, help_text='Required. Inform a valid email address.')
-
+class SignUpForm(UserCreationForm):
 	class Meta:
 		model = BlogUser
-		exclude = ('is_editor', 'is_inactive')
-        
-
-# class SignUpForm(ModelForm):
-# 	class Meta:
-# 		model = BlogUser
-# 		fields = ('__all__',)
+		fields = ('username',
+				  'first_name',
+				  'last_name',
+				  'email',
+				  'phone_number',
+				  'img_path',
+				  'bio',
+				  )
+print(type(UserCreationForm), UserCreationForm)  
+print(type(ModelForm), ModelForm)
 
 class ArticleCreationForm(ModelForm):
 	class Meta:

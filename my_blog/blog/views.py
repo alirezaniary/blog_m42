@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import SignUpForm, ArticleCreationForm, CommentForm
 from django.views import generic
 from .models import BlogUser, Article, Topic, Tag
-
+from django.views.generic.edit import UpdateView
 
 
 topic_list = Topic.objects.filter(super_topic=None)
@@ -18,7 +18,7 @@ def index(request):
 
 def sign_up(request):
     if request.method == 'POST':
-        form = SignUpForm(request.POST)
+        form = SignUpForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             username = form.cleaned_data.get('username')
@@ -96,9 +96,26 @@ def show_topic(request, topic_name):
 
 
 
+class ArticleUpdateView(UpdateView):
+	model = Article
+	fields = ('title', 
+			  'text',
+			  'img_path', 
+			  'tag', 
+			  'topic', 
+			  'is_active', 
+			  'is_valid')
+	template_name = 'article_form.html'
+	success_url ="/"
 
-
-
+def edit_article(request, pk):
+	article = get_object_or_404(Article, pk=pk)
+	print(article)
+	form = ArticleCreationForm(instance=article)
+	print(form)
+	return render(request, 'article_form.html',{'topic_list': topic_list,
+												'form': form,
+				                                 })
 
 
 

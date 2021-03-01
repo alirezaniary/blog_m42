@@ -4,10 +4,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 
 
-class BlogUserInline(admin.TabularInline):
-	model = BlogUser
-	
-
 class ArticleAdmin(admin.ModelAdmin):
 	list_display = ('author', 
 					'title', 
@@ -29,12 +25,6 @@ class BlogUserAdmin(admin.ModelAdmin):
 					'is_author', 
 					'is_editor', 
 					'is_inactive',)
-	exclude = ('password',
-			   'is_superuser', 
-			   'groups', 
-			   'user_permissions',
-			   'is_staff',
-			   'is_active',)
 	readonly_fields = [
 		'date_joined',
 		'last_login',
@@ -48,10 +38,13 @@ class BlogUserAdmin(admin.ModelAdmin):
 
 		if not is_superuser:
 			disabled_fields |= {
-				'is_superuser',
-				'username',
+				'is_superuser', 
+				'groups', 
 				'user_permissions',
-			}
+				'is_staff',
+				'is_active',
+				'username',
+				}
 		# Prevent non-superusers from editing their own permissions
 		if (
 			not is_superuser
@@ -78,10 +71,11 @@ class TagAdmin(admin.ModelAdmin):
 class TopicAdmin(admin.ModelAdmin):
 	list_display = ('name', 'super_topic')	
 
-
+admin.site.unregister(User)
+#admin.site.register(User, UserAdmin)
 admin.site.register(Article, ArticleAdmin)
 admin.site.register(BlogUser, BlogUserAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(Topic, TopicAdmin)
 admin.site.register(Tag, TagAdmin)
-
+#admin.site.register(ArticleLike)
