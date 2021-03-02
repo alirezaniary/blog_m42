@@ -16,8 +16,7 @@ class SignUpForm(UserCreationForm):
 				  'img_path',
 				  'bio',
 				  )
-print(type(UserCreationForm), UserCreationForm)  
-print(type(ModelForm), ModelForm)
+
 
 class ArticleCreationForm(ModelForm):
 	class Meta:
