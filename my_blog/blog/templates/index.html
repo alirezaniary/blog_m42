@@ -87,8 +87,8 @@
 		<span class="fs-4">/</apan>
 		{% endif %}
        {% endfor %}
-       {% for art in article %} 
         </h1>
+       {% for art in article %} 
         <div class="card mb-3" style="max-width: 1000px;">
 		  <div class="row g-0">
 			<div class="col-md-4">
@@ -113,7 +113,84 @@
 		</div>
         
         {% endfor %}
-        
+
+	{% if "topics" in request.get_full_path %}
+        <nav>
+		  <ul class="pagination justify-content-center">
+			<li class="page-item {% if not page %}disabled{% endif %} {% if page == 1 %}disabled{% endif %}">
+			  <a class="page-link" href="/topics/{{title}}/?page={{page|add:-1}}" tabindex="-1" aria-disabled="true">صفحه قبل</a>
+			</li>
+			{% if page %}
+				{% if page > 2 %}
+			<li class="page-item"><a class="page-link" href="/topics/{{title}}/?page={{page|add:-2}}">{{page|add:-2}}</a></li>
+				{% endif %}
+				{% if page > 1 %}
+			<li class="page-item"><a class="page-link" href="/topics/{{title}}/?page={{page|add:-1}}">{{page|add:-1}}</a></li>
+				{% endif %}
+			<li class="page-item disabled"><a class="page-link " href="#">{{page}}</a></li>
+			<li class="page-item"><a class="page-link" href="/topics/{{title}}/?page={{page|add:1}}">{{page|add:1}}</a></li>
+			<li class="page-item"><a class="page-link" href="/topics/{{title}}/?page={{page|add:2}}">{{page|add:2}}</a></li>
+			{% else %}
+			<li class="page-item"><a class="page-link" href="#">1</a></li>
+			{% endif %}
+			
+			<li class="page-item {% if not page %}disabled{% endif %}">
+			  <a class="page-link" href="/topics/{{title}}/?page={{page|add:1}}">صفحه بعد</a>
+			</li>
+		  </ul>
+		</nav>
+	{% elif  "tags" in request.get_full_path %}
+		 <nav>
+		  <ul class="pagination justify-content-center">
+			<li class="page-item {% if not page %}disabled{% endif %} {% if page == 1 %}disabled{% endif %}">
+			  <a class="page-link" href="/tags/{{title}}/?page={{page|add:-1}}" tabindex="-1" aria-disabled="true">صفحه قبل</a>
+			</li>
+			{% if page %}
+				{% if page > 2 %}
+			<li class="page-item"><a class="page-link" href="/tags/{{title}}/?page={{page|add:-2}}">{{page|add:-2}}</a></li>
+				{% endif %}
+				{% if page > 1 %}
+			<li class="page-item"><a class="page-link" href="/tags/{{title}}/?page={{page|add:-1}}">{{page|add:-1}}</a></li>
+				{% endif %}
+			<li class="page-item disabled"><a class="page-link " href="#">{{page}}</a></li>
+			<li class="page-item"><a class="page-link" href="/tags/{{title}}/?page={{page|add:1}}">{{page|add:1}}</a></li>
+			<li class="page-item"><a class="page-link" href="/tags/{{title}}/?page={{page|add:2}}">{{page|add:2}}</a></li>
+			{% else %}
+			<li class="page-item"><a class="page-link" href="#">1</a></li>
+			{% endif %}
+			
+			<li class="page-item {% if not page %}disabled{% endif %}">
+			  <a class="page-link" href="/tags/{{title}}/?page={{page|add:1}}">صفحه بعد</a>
+			</li>
+		  </ul>
+		</nav>
+	{% else %}
+		 <nav>
+		  <ul class="pagination justify-content-center">
+			<li class="page-item {% if not page %}disabled{% endif %} {% if page == 1 %}disabled{% endif %}">
+			  <a class="page-link" href="/?page={{page|add:-1}}" tabindex="-1" aria-disabled="true">صفحه قبل</a>
+			</li>
+			{% if page %}
+				{% if page > 2 %}
+			<li class="page-item"><a class="page-link" href="?page={{page|add:-2}}">{{page|add:-2}}</a></li>
+				{% endif %}
+				{% if page > 1 %}
+			<li class="page-item"><a class="page-link" href="?page={{page|add:-1}}">{{page|add:-1}}</a></li>
+				{% endif %}
+			<li class="page-item disabled"><a class="page-link " href="#">{{page}}</a></li>
+			<li class="page-item"><a class="page-link" href="?page={{page|add:1}}">{{page|add:1}}</a></li>
+			<li class="page-item"><a class="page-link" href="?page={{page|add:2}}">{{page|add:2}}</a></li>
+			{% else %}
+			<li class="page-item"><a class="page-link" href="#">1</a></li>
+			{% endif %}
+			
+			<li class="page-item {% if not page %}disabled{% endif %}">
+			  <a class="page-link" href="?page={{page|add:1}}">صفحه بعد</a>
+			</li>
+		  </ul>
+		</nav>
+	{% endif %}
+
         {% endblock %} 
     </div>
     <footer id="footer" class="footer mt-auto py-3 bg-light fixed-bottom d-flex justify-content-between align-items-center"> 

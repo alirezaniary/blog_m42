@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from blog.models import Topic, Article, Comment
 from django.db.models import Count
+from django.contrib.auth.decorators import login_required
 
-
-
+@login_required
 def profile_view(request):
 	topic_list = Topic.objects.filter(super_topic=None)
 	art_not_validated = Article.objects.filter(is_valid=False).count()

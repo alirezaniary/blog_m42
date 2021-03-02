@@ -6,14 +6,27 @@ from .forms import SignUpForm, ArticleCreationForm, CommentForm
 from django.views import generic
 from .models import BlogUser, Article, Topic, Tag
 from django.views.generic.edit import UpdateView
+from django.contrib.auth.decorators import login_required
 
 
 topic_list = Topic.objects.filter(super_topic=None)
 
 def index(request):
-    return render(request, 'index.html',{'topic_list': topic_list,
-    									 'article': Article.objects.all(),
-                                         })
+    page = request.GET.get('page', None)
+    try:
+        if page and int(page) > 1:
+            page = int(page)
+            queryset =  Article.objects.filter(is_valid=True, is_active=True)[(page-1)*10: page*10]
+        else:
+            page = 1
+            queryset =  Article.objects.filter(is_valid=True, is_active=True)[0:10]
+        return render(request, 'index.html',{'topic_list': topic_list,
+        									 'article': queryset,
+        									 'page': page})
+    except:
+        return render(request, 'index.html',{'topic_list': topic_list,
+        									 'article': Article.objects.filter(is_valid=True, is_active=True)[0:10]
+        									 })
 
 
 def sign_up(request):
@@ -32,7 +45,7 @@ def sign_up(request):
                                             'topic_list': topic_list
                                             })
 
-
+@login_required
 def new_article(request):
     if request.method == 'POST':
         article_form = ArticleCreationForm(request.POST, request.FILES)
@@ -80,19 +93,61 @@ def show_article(request, username, article_id):
 				 })
 
 def show_tag(request, tag_name):
-	tag = get_object_or_404(Tag, name=tag_name)
-	return render(request, 'index.html',{'topic_list': topic_list,
-    									 'article': Article.objects.filter(tag__name=tag_name),
-    									 'title': tag
-                                         })
+    tag = get_object_or_404(Tag, name=tag_name)
+    page = request.GET.get('page', None)
+    try:
+        if page and int(page) > 1:
+            page = int(page)
+            queryset =  Article.objects.filter(is_valid=True,
+            								   is_active=True,
+            								   tag__name=tag_name)[(page-1)*10: page*10]
+        else:
+            page = 1
+            queryset =  Article.objects.filter(is_valid=True,
+            								   is_active=True,
+            								   tag__name=tag_name)[0:10]
+            								   
+        return render(request, 'index.html',{'topic_list': topic_list,
+											 'article': queryset,
+											 'title': tag,
+											 'page': page
+		                                     })
+    except:
+        return render(request, 'index.html',{'topic_list': topic_list,
+											 'article': Article.objects.filter(is_valid=True,
+																    		   is_active=True,
+																   			   tag__name=tag_name)[0:10],
+											 'title': tag
+		                                     })
 
 
 def show_topic(request, topic_name):
-	topic = get_object_or_404(Topic, name=topic_name)
-	return render(request, 'index.html',{'topic_list': topic_list,
-    									 'article': Article.objects.filter(topic__name=topic_name),
-    									 'title': topic,
-                                         })
+    topic = get_object_or_404(Topic, name=topic_name)
+    page = request.GET.get('page', None)
+    try:
+        if page and int(page) > 1:
+            page = int(page)
+            queryset =  Article.objects.filter(is_valid=True,
+            								   is_active=True,
+            								   topic__name=topic_name)[(page-1)*10: page*10]
+        else:
+            page = 1
+            queryset =  Article.objects.filter(is_valid=True,
+            								   is_active=True,
+            								   topic__name=topic_name)[0:10]
+            								   
+        return render(request, 'index.html',{'topic_list': topic_list,
+											 'article': queryset,
+											 'title': topic,
+											 'page': page
+		                                     })
+    except:
+        return render(request, 'index.html',{'topic_list': topic_list,
+											 'article': Article.objects.filter(is_valid=True,
+																    		   is_active=True,
+																   			   topic__name=topic_name)[0:10],
+											 'title': topic
+		                                     })
 
 
 
@@ -108,6 +163,8 @@ class ArticleUpdateView(UpdateView):
 	template_name = 'article_form.html'
 	success_url ="/"
 
+
+@login_required
 def edit_article(request, pk):
 	article = get_object_or_404(Article, pk=pk)
 	print(article)
