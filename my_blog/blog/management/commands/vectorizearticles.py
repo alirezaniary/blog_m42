@@ -10,14 +10,14 @@ class Command(BaseCommand):
 	help = 'procces article texts and save each one as a vector'
 
 	def add_arguments(self, parser):
-		pass
+		parser.add_argument('-p', '--path', nargs='?', default='cc.fa.100.bin', type=str, help= 'path to fasttext object' )
 
 	def handle(self, *args, **options):
 		articles = Article.objects.filter(is_vectorized=False)
 
 		N = Normalizer()
 		S = Stemmer()
-		FT = fasttext.load_model('cc.fa.5.bin')
+		FT = fasttext.load_model(options['path'])
 		index = 1
 		for article in articles:
 			print(index)
@@ -28,7 +28,7 @@ class Command(BaseCommand):
 			vector = mean([FT.get_word_vector(w) for w in text], axis=0)
 			obj = ArticleVector(
 					article=article,
-					embedding=vector.tolist()*20
+					embedding=vector.tolist()
 				)
 			obj.save()
 			article.is_vectorized = True

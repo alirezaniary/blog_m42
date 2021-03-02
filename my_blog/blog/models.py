@@ -10,8 +10,8 @@ class Article(models.Model):
 	is_valid = models.BooleanField('تایید شده؟', default=False)
 	pub_date = models.DateTimeField('زمان انتشار', auto_now_add=True)
 	val_date = models.DateTimeField('زمان تایید', null=True, blank=True)
-	img_path = models.ImageField('محل ذخیره تصویر', upload_to='%Y/%m/%d/')
-	title = models.CharField('عنوان مقاله', max_length=150)
+	img_path = models.ImageField('محل ذخیره تصویر', upload_to='%Y/%m/%d/', max_length=750)
+	title = models.CharField('عنوان مقاله', max_length=350)
 	text = models.TextField('متن مقاله', validators=[MinLengthValidator(300)])
 	author = models.ForeignKey(
 		'BlogUser', on_delete=models.CASCADE, related_name='published', verbose_name='نویسنده')
@@ -151,14 +151,14 @@ class BlogUser(User):
 
 
 class Tag(models.Model):
-	name = models.CharField('برچسب', max_length=25, unique=True)
+	name = models.CharField('برچسب', max_length=55, unique=True)
 
 	def __str__(self):
 		return self.name
 
 
 class Topic(models.Model):
-	name = models.CharField('دسته بندی', max_length=25)
+	name = models.CharField('دسته بندی', max_length=55)
 	super_topic = models.ForeignKey(
 		'self', on_delete=models.SET_NULL, null=True, blank=True, related_name='subtopics', verbose_name='فرا مجموعه')
 
@@ -243,3 +243,4 @@ class ArticleVector(models.Model):
 		models.FloatField(),
 		size=100
 	)
+
