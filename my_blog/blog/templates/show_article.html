@@ -29,7 +29,7 @@
                     	{% if author.img_path %}
                         <img src="/media/{{ author.img_path }}" class="rounded-app h-100"> 
                         {% else %}
-                        <img src="/static/profile_picture_placeholder.jpeg" class="rounded-app h-100">
+                        <img src="{% static 'blog/profile_picture_placeholder.jpeg' %}" class="rounded-app h-100">
                         {% endif %}
                     </div>
                     <div class="ml-3 w-100 p-2">
