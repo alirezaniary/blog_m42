@@ -28,6 +28,23 @@ def index(request):
         									 'article': Article.objects.filter(is_valid=True, is_active=True)[0:10]
         									 })
 
+def show_publication(request, username):
+    page = request.GET.get('page', None)
+    try:
+        if page and int(page) > 1:
+            page = int(page)
+            queryset =  Article.objects.filter(is_valid=True, is_active=True, author__username=username)[(page-1)*10: page*10]
+        else:
+            page = 1
+            queryset =  Article.objects.filter(is_valid=True, is_active=True, author__username=username)[0:10]
+        return render(request, 'index.html',{'topic_list': topic_list,
+        									 'article': queryset,
+        									 'page': page})
+    except:
+        return render(request, 'index.html',{'topic_list': topic_list,
+        									 'article': Article.objects.filter(is_valid=True, is_active=True, author__username=username)[0:10]
+        									 })
+        									 
 
 def sign_up(request):
     if request.method == 'POST':
@@ -150,7 +167,7 @@ def show_topic(request, topic_name):
 		                                     })
 
 
-
+@login_required
 class ArticleUpdateView(UpdateView):
 	model = Article
 	fields = ('title', 
