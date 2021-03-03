@@ -24,9 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = cnf['sec_key']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '94.182.191.49']
 
 
 # Application definition
@@ -126,8 +126,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-MEDIA_ROOT = 'blog/media/'
-#LOGIN_REDIRECT_URL = 'blog:index'
+MEDIA_ROOT = '/var/www/blog/media/'
+STATIC_ROOT = '/var/www/blog/static/'
 
 
 REST_FRAMEWORK = {

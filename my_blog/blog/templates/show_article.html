@@ -31,7 +31,7 @@
                     <div class="ml-3 w-100 p-2">
                         <h4 class="mb-0 mt-0">{{ author.full_name }}</h4> 
                         <span>{{ author.bio }}</span>
-                        
+               
                     </div>
                     </div>
                 <div class="p-2 col-3 bg-light text-dark d-flex flex-column justify-content-between rounded">
@@ -109,7 +109,11 @@
 
 {% endif %}
 </p>
+		{% if 'http' in article.img_path.name %}
+		<img src="{{ article.img_path }}" class="img-fluid"/>
+		{% else %}
 		<img src="/media/{{ article.img_path }}" class="img-fluid"  />
+		{% endif %}
 		<article class="pt-4">
 		{{ article.text | linebreaks}}
 		</article>

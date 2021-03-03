@@ -92,8 +92,14 @@
         <div class="card mb-3" style="max-width: 1000px;">
 		  <div class="row g-0">
 			<div class="col-md-4">
-			  <img src="/media/{{ art.img_path }} " width="300">
-			</div>
+				{% if 'http' in art.img_path.name %}
+				
+				<img src="{{ art.img_path }} " width="300">
+				{% else %}
+
+				 <img src="/media/{{ art.img_path }} " width="300">
+			  	{% endif %}
+			  </div>
 			<div class="col-md-8">
 			  <div class="card-body">
 				<a href="/@{{art.author.username}}/{{art.id}}"><h5 class="card-title">{{ art.title }}</h5></a>
