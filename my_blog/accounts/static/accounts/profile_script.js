@@ -3,7 +3,7 @@ $(document).ready(function () {
 	
 	function articleRenderer(articles){
 		$artTemp = $('#templates .art')
-		for(art of articles){
+		for(art of articles.results){
 			$art = $artTemp.clone()
 			$art.find('img').prop('src', art.img_path)
 			artPath = `/@${art.username}/${art.id}`
@@ -51,7 +51,7 @@ $(document).ready(function () {
 	
 	function commentRenderer(comments){
 		$comTemp = $('#templates .comment')
-		for(com of comments){
+		for(com of comments.results){
 			$com = $comTemp.clone()
 			$com.find('.card-body').prop('id', com.id)
 			$com.find('#text').text(com.text)
@@ -79,7 +79,7 @@ $(document).ready(function () {
 	
 	function authorRenderer(authors){
 		$autTemp = $('#templates .author')
-		for(aut of authors){
+		for(aut of authors.results){
 			$.get(`/api/author/${aut.author}/`,function(result){
 			$aut = $autTemp.clone()
 			$aut.prop('id',result.id)
