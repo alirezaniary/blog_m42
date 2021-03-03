@@ -91,7 +91,7 @@ def show_article(request, username, article_id):
 	article = get_object_or_404(
 	    Article, pk=article_id, author__username=username)
 	author = article.author
-	comments = article.comment_set.filter(response_to=None)
+	comments = article.comment_set.filter(response_to=None, is_valid=True)
 	article_count = author.published.filter(is_valid=True).count()
 	follower_count = author.followers.count()
 	comment_form = CommentForm()

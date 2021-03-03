@@ -26,8 +26,7 @@ class ArticleCreationForm(ModelForm):
 				  'img_path', 
 				  'tag', 
 				  'topic', 
-				  'is_active', 
-				  'is_valid')
+				  'is_active',)
 
 
 class CommentForm(ModelForm):

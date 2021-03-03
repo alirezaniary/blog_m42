@@ -82,10 +82,10 @@ class CommentSerializer(serializers.ModelSerializer):
 
 	def validate_is_valid(self, value):
 		data = self.get_initial()
-		try:
-			data['validator']
-		except:
-			raise serializers.ValidationError("اطلاعات کافی نیست!!")
+		if 'validator' not in data.keys():
+			return False
+		elif 'text' in data.keys():
+			raise serializers.ValidationError("اطلاعات صحیح نیست!!")
 		return value
 			
 		

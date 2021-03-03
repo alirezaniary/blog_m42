@@ -185,7 +185,7 @@ class ArticleViewSet(mixins.UpdateModelMixin,
 				return queryset.filter(bookmarkedBy=bloguser, **filter)
 				
 			elif param['liked'] is not None:
-				return queryset.filter(user_liked=bloguser, **filter)
+				return queryset.filter(articlelike__is_like=True, user_liked=bloguser, **filter)
 				
 			else:
 				return queryset.filter(**filter)

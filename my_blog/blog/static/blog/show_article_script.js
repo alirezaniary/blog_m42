@@ -150,7 +150,7 @@ $(document).ready(function () {
 			input_data[field.name] = field.value	
 		}
 		$(this).siblings('#id_text').val('')
-
+		console.log(input_data)
 		$.post('/api/comment/', input_data, function(status){
 			renderComment(status)
 			$('html, body').animate({
