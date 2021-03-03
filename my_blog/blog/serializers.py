@@ -149,6 +149,8 @@ class ArticleSerializer(serializers.ModelSerializer):
 
 	def get_img_path(self, article):
 		request = self.context.get('request')
+		if 'http' in article.img_path.name:
+			return article.img_path.name
 		img_path = article.img_path.url
 		return request.build_absolute_uri('/media/' + img_path)
 	

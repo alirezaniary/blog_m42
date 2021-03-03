@@ -2,7 +2,7 @@ from django.urls import path, include
 from blog.APIs import *
 from rest_framework import routers
 
-router = routers.SimpleRouter()
+router = routers.DefaultRouter()
 router.register('like', ArticleLikeViewSet)
 router.register('clike', CommentLikeViewSet)
 router.register('bookmark', BookmarkViewSet)
