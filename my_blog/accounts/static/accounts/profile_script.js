@@ -85,6 +85,8 @@ $(document).ready(function () {
 			$aut.prop('id',result.id)
 			$aut.find('h4').text(result.full_name)
 			$aut.find('.bio').text(result.bio)
+			userUrl = `/@${result.username}/`
+			$aut.find('a').prop('href', userUrl)
 			$aut.find('img').prop('src', result.img_path)
 			$aut.find('.number1').text(result.publications)
 			$aut.find('.number2').text(result.followers)

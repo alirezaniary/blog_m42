@@ -28,7 +28,7 @@ class TopicSerializer(serializers.ModelSerializer):
 class BlogUserSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = BlogUser
-		fields = ['id', 'full_name', 'bio', 'img_path', 'publications', 'followers']
+		fields = ['id', 'full_name', 'bio', 'img_path', 'publications', 'followers', 'username']
 	publications = serializers.SerializerMethodField()
 	followers =  serializers.SerializerMethodField()
 	img_path = serializers.SerializerMethodField()
