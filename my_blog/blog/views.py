@@ -93,7 +93,7 @@ def show_article(request, username, article_id):
 	author = article.author
 	comments = article.comment_set.filter(response_to=None)
 	article_count = author.published.filter(is_valid=True).count()
-	follower_count = author.followedBy.count()
+	follower_count = author.followers.count()
 	comment_form = CommentForm()
 	return render(request,
 				 'show_article.html',

@@ -5,7 +5,7 @@ from rest_framework.validators import UniqueValidator, UniqueTogetherValidator
 class TagSerializer(serializers.ModelSerializer):
 	def to_representation(self, value):
 		return value.name
-		
+
 	class Meta:
 		model = Tag
 		fields = ['id', 'name']
@@ -19,7 +19,7 @@ class TagSerializer(serializers.ModelSerializer):
 class TopicSerializer(serializers.ModelSerializer):
 	def to_representation(self, value):
 		return value.name
-		
+
 	class Meta:
 		model = Topic
 		fields = ['id', 'name']
@@ -35,16 +35,19 @@ class BlogUserSerializer(serializers.ModelSerializer):
 
 	def get_img_path(self, author):
 		request = self.context.get('request')
-		img_path = author.img_path.url
-		return request.build_absolute_uri('/media/' + img_path)
-				
+		try:
+			img_path = author.img_path.url
+			return request.build_absolute_uri('/media/' + img_path)
+		except:
+			return request.build_absolute_uri('/static/blog/profile_picture_placeholder.jpeg')
+
 	def get_followers(self, author):
 		return author.followedBy.count()
-	
+
 	def get_publications(self, author):
 		return author.published.count()
-		
-		
+
+
 class CommentSerializer(serializers.ModelSerializer):
 	article_link = serializers.SerializerMethodField()
 	article_title = serializers.SerializerMethodField()
