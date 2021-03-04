@@ -11,10 +11,12 @@ from time import time
 
 class listArticle(generics.ListAPIView):
 	serializer_class = ArticleSerializer
-	print("get called", time())
-	def get_queryset(self):
+	queryset = Article.objects.all()
+
+
+	def get(self, request):
 		word_vec = WordVector()
-		search_query = self.request.query_params.get('search', None)
+		search_query = request.query_params.get('search', None)
 		print(search_query, 'search_query', time())
 		query_vec = word_vec.get_vector(search_query)
 		print(query_vec,'query_vec', time())
@@ -27,7 +29,13 @@ class listArticle(generics.ListAPIView):
 		print(corrolation.shape, 'corrolation', time())
 		index = corrolation.argsort()
 		id_list = article_ids[index][-5:]
-		return Article.objects.filter(id__in=id_list)
+		objs = self.get_queryset().filter(id__in=id_list)
+		serializer = get_serializer()(objs)
+		
+		return Response(serializer.data, status=status.HTTP_200_OK )
+
+		
+
 
 class ListCreateTag(generics.ListCreateAPIView):
 	serializer_class = TagSerializer
