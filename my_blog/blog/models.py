@@ -6,7 +6,8 @@ from django.contrib.postgres.fields import ArrayField
 import pymongo
 import numpy
 import redis
-
+from time import time
+print('_______________________________________', time())
 class Article(models.Model):
 	is_vectorized = models.BooleanField(default=False)
 	is_active = models.BooleanField('نمایش عمومی؟', default=True)
@@ -265,10 +266,10 @@ class WordVector:
 		self.collection = mydb["words"]
 
 	def _get_word(self, word):
-		print(word)
 		return self.collection.find_one({"word": word})
 
 	def _get_unknown_by_length(self, word):
+		print('unkhon')
 		word_length = len(word)
 		vec_list = self.collection.distinct('vector', {'$where': 'this.word.length == {word_length}'})
 		return numpy.mean(vec_list, axis=0).tolist()
@@ -276,7 +277,7 @@ class WordVector:
 
 	def _get_word_vector(self, word):
 		dic = self._get_word(word)
-		print(dic, 'dic')
+		print(dic, 'dic', time())
 
 		if dic is not None:
 			return numpy.array(dic["vector"])
@@ -289,7 +290,7 @@ class WordVector:
 	def get_vector(self, query):
 		print(query, 'query')
 		words = query.split()
-		print(words, 'words')
+		print(words, 'words' , time())
 		return numpy.mean([self._get_word_vector(word) for word in words], axis=0)
 
 

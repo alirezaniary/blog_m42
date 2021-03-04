@@ -6,10 +6,12 @@ from rest_framework import mixins
 from rest_framework import viewsets
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
+from time import time
+
 
 class listArticle(generics.ListAPIView):
 	serializer_class = ArticleSerializer
-	
+	print("get called", time())
 	def get_queryset(self):
 		word_vec = WordVector()
 		search_query = self.request.query_params.get('search', None)
