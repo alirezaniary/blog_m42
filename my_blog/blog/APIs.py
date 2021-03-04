@@ -7,7 +7,25 @@ from rest_framework import viewsets
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 
-
+class listArticle(generics.ListAPIView):
+	serializer_class = ArticleSerializer
+	
+	def get_queryset(self):
+		word_vec = WordVector()
+		search_query = self.request.query_params.get('search', None)
+		print(search_query, 'search_query')
+		query_vec = word_vec.get_vector(search_query)
+		print(query_vec,'query_vec')
+		embeddind = ArticleVector.get_embedding_matrice()
+		print(embeddind.shape, 'embeddind')
+		article_ids = ArticleVector.get_articl_ids()
+		print(article_ids.shape, 'article_ids')
+		
+		corrolation = embeddind.dot(query_vec)
+		print(corrolation.shape, 'corrolation')
+		index = corrolation.argsort()
+		id_list = article_ids[index][-5:]
+		return Article.objects.filter(id__in=id_list)
 
 class ListCreateTag(generics.ListCreateAPIView):
 	serializer_class = TagSerializer
@@ -22,6 +40,21 @@ class ListCreateTag(generics.ListCreateAPIView):
 						   .order_by('-count')[:5]
 		return queryset
 
+
+class ListTopic(generics.ListAPIView):
+	serializer_class = TopicSerializer
+
+	def get_queryset(self):
+		topic = self.request.query_params.get('name', None)
+		queryset = Topic.objects.all()
+		if topic is not None:
+			return queryset.annotate(count=Count('article'))\
+						   .filter(name__regex=r'.*' + topic + r'.*')\
+						   .order_by('-count')[:5]
+		return queryset
+
+
+	
 
 class RetrieveAuthor(generics.RetrieveAPIView):
 	serializer_class = BlogUserSerializer
@@ -144,8 +177,6 @@ class CommentViewSet(mixins.CreateModelMixin,
 				
 				if param['topic']:
 					filter['article__topic'] = param['topic']
-				else:
-					filter['article__topic__isnull'] = False
 				
 				return queryset.filter(**filter)
 			

@@ -3,6 +3,9 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.core.validators import MinLengthValidator
 from django.contrib.postgres.fields import ArrayField
+import pymongo
+import numpy
+import redis
 
 class Article(models.Model):
 	is_vectorized = models.BooleanField(default=False)
@@ -243,4 +246,68 @@ class ArticleVector(models.Model):
 		models.FloatField(),
 		size=100
 	)
+	
+	@classmethod
+	def get_embedding_matrice(clf):
+		return numpy.array(clf.objects.value_list('embedding', flat=True))
+
+	@classmethod
+	def get_articl_ids(clf):
+		return numpy.array(clf.objects.value_list('article', flat=True))
+
+myclient = pymongo.MongoClient()
+mydb = myclient["word2vec"]
+#R = redis.Redis(decode_responses=True)
+
+
+class WordVector:
+	def __init__(self):
+		self.collection = mydb["words"]
+
+	def _get_word(self, word):
+		print(word)
+		return self.collection.find_one({"word": word})
+
+	def _get_unknown_by_length(self, word):
+		word_length = len(word)
+		vec_list = self.collection.distinct('vector', {'$where': 'this.word.length == {word_length}'})
+		return numpy.mean(vec_list, axis=0).tolist()
+
+
+	def _get_word_vector(self, word):
+		dic = self._get_word(word)
+		print(dic, 'dic')
+
+		if dic is not None:
+			return numpy.array(dic["vector"])
+
+#		if not R.exists(f'unknown_{len(word)}'):
+#			R.rpush(f'unknown_{len(word)}', *self._get_unknown_by_length(word))
+
+#		return numpy.array(R.lrange(f'unknown_{len(word)}'), dtype='float32')
+
+	def get_vector(self, query):
+		print(query, 'query')
+		words = query.split()
+		print(words, 'words')
+		return numpy.mean([self._get_word_vector(word) for word in words], axis=0)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

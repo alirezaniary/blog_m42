@@ -14,7 +14,25 @@ class TagSerializer(serializers.ModelSerializer):
 				queryset=Tag.objects.all()
 			)
 		]
+	
+	def validate_name(self, value):
+		request = self.context.get('request')
+		if request.user.is_author:
+			return value
 
+class TopicSerializer(serializers.ModelSerializer):
+	def to_representation(self, value):
+		return value.name
+
+	class Meta:
+		model = Topic
+		fields = ['id', 'name']
+		validators = [
+			UniqueValidator(
+				queryset=Topic.objects.all()
+			)
+		]
+		
 
 class TopicSerializer(serializers.ModelSerializer):
 	def to_representation(self, value):
