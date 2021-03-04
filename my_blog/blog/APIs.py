@@ -13,16 +13,16 @@ class listArticle(generics.ListAPIView):
 	def get_queryset(self):
 		word_vec = WordVector()
 		search_query = self.request.query_params.get('search', None)
-		print(search_query, 'search_query')
+		print(search_query, 'search_query', time())
 		query_vec = word_vec.get_vector(search_query)
-		print(query_vec,'query_vec')
+		print(query_vec,'query_vec', time())
 		embeddind = ArticleVector.get_embedding_matrice()
-		print(embeddind.shape, 'embeddind')
+		print(embeddind.shape, 'embeddind', time())
 		article_ids = ArticleVector.get_articl_ids()
-		print(article_ids.shape, 'article_ids')
+		print(article_ids.shape, 'article_ids', time())
 		
 		corrolation = embeddind.dot(query_vec)
-		print(corrolation.shape, 'corrolation')
+		print(corrolation.shape, 'corrolation', time())
 		index = corrolation.argsort()
 		id_list = article_ids[index][-5:]
 		return Article.objects.filter(id__in=id_list)

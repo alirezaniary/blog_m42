@@ -249,11 +249,11 @@ class ArticleVector(models.Model):
 	
 	@classmethod
 	def get_embedding_matrice(clf):
-		return numpy.array(clf.objects.value_list('embedding', flat=True))
+		return numpy.array(clf.objects.values_list('embedding', flat=True))
 
 	@classmethod
 	def get_articl_ids(clf):
-		return numpy.array(clf.objects.value_list('article', flat=True))
+		return numpy.array(clf.objects.values_list('article', flat=True))
 
 myclient = pymongo.MongoClient()
 mydb = myclient["word2vec"]
