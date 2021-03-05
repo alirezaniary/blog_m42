@@ -9,14 +9,15 @@ from rest_framework.response import Response
 from time import time
 
 
-class listArticle(generics.ListAPIView):
+class ListArticle(generics.ListAPIView):
 	serializer_class = ArticleSerializer
 	queryset = Article.objects.all()
 
 
 	def get(self, request):
 		word_vec = WordVector()
-		search_query = request.query_params.get('search', None)
+		search_query = request.query_params.get('q', None)
+		print(search_query)
 
 		query_vec = word_vec.get_vector(search_query)
 		embeddind = ArticleVector.get_embedding_matrice()
@@ -32,7 +33,12 @@ class listArticle(generics.ListAPIView):
 
 
 
-class ListCreateTag(generics.ListCreateAPIView):
+
+class TagViewSet(mixins.CreateModelMixin,
+				 mixins.RetrieveModelMixin,
+				 mixins.ListModelMixin,
+				 viewsets.GenericViewSet):
+	queryset = Tag.objects.all()
 	serializer_class = TagSerializer
 	permission_classes = [permissions.IsAuthenticated]
 
@@ -230,9 +236,6 @@ class ArticleViewSet(mixins.UpdateModelMixin,
 			print(e)
 			return queryset.filter(**filter)
 		
-		
-	
-
 
 
 

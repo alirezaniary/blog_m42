@@ -64,7 +64,7 @@ def sign_up(request):
 
 @login_required
 def new_article(request):
-    if request.method == 'POST':
+    if request.method == 'POST' and request.user.bloguser.is_author:
         article_form = ArticleCreationForm(request.POST, request.FILES)
 
         if article_form.is_valid():
@@ -79,7 +79,7 @@ def new_article(request):
             render(request, 'new_article.html', {'form': article_form,
                                                 'topic_list': topic_list,
                                                 })
-    elif request.method == 'GET':
+    elif request.method == 'GET' and request.user.bloguser.is_author:
         article_form = ArticleCreationForm()
     return render(request, 'new_article.html', {'form': article_form,
                                                 'topic_list': topic_list,

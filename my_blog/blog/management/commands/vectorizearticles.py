@@ -13,7 +13,7 @@ class Command(BaseCommand):
 		parser.add_argument('-p', '--path', nargs='?', default='cc.fa.100.bin', type=str, help= 'path to fasttext object' )
 
 	def handle(self, *args, **options):
-		articles = Article.objects.filter()
+		articles = Article.objects.filter(is_vectorized=False)
 
 		N = Normalizer()
 		FT = fasttext.load_model(options['path'])
@@ -34,8 +34,8 @@ class Command(BaseCommand):
 						embedding=vector.tolist()
 					)
 				obj.save()
-				#article.is_vectorized = True
-				#article.save()
+				article.is_vectorized = True
+				article.save()
 				index += 1
 			except Exception as e:
 				print(e)

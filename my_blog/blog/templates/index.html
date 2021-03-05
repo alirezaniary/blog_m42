@@ -21,8 +21,8 @@
             <a class="navbar-brand" href="{% url 'blog:index' %}">
                 <img class="profile-pic" src="{% static 'blog/logo.png' %}"> نقطه ویرگول؛ 
             </a>
-            <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="جستجو" aria-label="Search">
+            <form class="d-flex flex-column">
+                <input id="search-bar" class="form-control me-2" type="search" placeholder="جستجو" list="search-results">
             </form>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -82,7 +82,11 @@
                 </ul>
             </div>
         </div>
-    </nav> {% endblock %} 
+    </nav> 
+            <div id="search-results" class="fixed-top w-75 card m-auto bg-white" style="top: 63px;">
+				
+			</div>
+    {% endblock %} 
     <div class="container pt-container"> 
         {% block content %}
        {% if title %}<h1 class="p-3 ">{{ title.name }}/{% endif %}{% for sub in title.subtopics.all %}

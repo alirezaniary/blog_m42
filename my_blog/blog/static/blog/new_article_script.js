@@ -52,12 +52,23 @@ $('#tag-input').keypress(function(event){
 		$.post('/api/tag/',{name: tagValue,
 							csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val()},
 		function(data){
+			data = data.results[0]
 			$('<option value=' + data.id + '>' + data.name + '</option>')
 					.appendTo('#id_tag')
 			
 		
-		}
-		);
+		}).fail(function(data){
+			if(data.responseText.includes('already exists')){
+				$.get('/api/tag/',{name: tagValue},
+				function(data){
+					data = data.results[0]
+					$('<option value=' + data.id + '>' + data.name + '</option>')
+							.appendTo('#id_tag')
+			
+		
+				})
+			}
+		})
 		}});
 
 
@@ -68,7 +79,7 @@ $('#tag-input').keyup(function(event){
 			$('#datalistOptions').empty();
 			$.getJSON('/api/tag/',{name: $(this).val()},
 			function(data){
-				for(option of data){
+				for(option of data.results){
 					$('<option value=' + option.name + ' >')
 					.appendTo('#datalistOptions')
 				}
@@ -113,5 +124,5 @@ var fileName = input.files[0].name;
 infoArea.textContent = fileName;
 }
 
-console.log('end')
+console.log('hhhg')
 });

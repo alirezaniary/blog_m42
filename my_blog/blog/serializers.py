@@ -3,9 +3,7 @@ from .models import *
 from rest_framework.validators import UniqueValidator, UniqueTogetherValidator
 
 class TagSerializer(serializers.ModelSerializer):
-	def to_representation(self, value):
-		return value.name
-
+	
 	class Meta:
 		model = Tag
 		fields = ['id', 'name']

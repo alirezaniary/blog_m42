@@ -10,7 +10,8 @@ $(document).ready(function () {
 			$art.find('a').prop('href', artPath)
 			$art.find('h5').text(art.title)
 			$art.find('.text-truncate').text(art.text)
-			$art.find('small').text(art.tag)
+			tags = art.tag.map(x => x.name);
+			$art.find('small').text(tags)
 			$art.find('.is_active').prop('checked', art.is_active).prop('id', art.id)
 			$art.find('.is_valid').prop('checked', art.is_valid).prop('id', art.id)
 			if($('#id').text() == art.username) $art.find('.is_valid').prop('disabled', true)
