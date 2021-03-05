@@ -13,11 +13,11 @@ class Command(BaseCommand):
 		parser.add_argument('-p', '--path', nargs='?', default='cc.fa.100.bin', type=str, help= 'path to fasttext object' )
 
 	def handle(self, *args, **options):
-		articles = Article.objects.filter(is_vectorized=False)
+		articles = Article.objects.filter()
 
 		N = Normalizer()
-		S = Stemmer()
 		FT = fasttext.load_model(options['path'])
+
 		index = 0
 		for article in articles:
 			try:
@@ -26,16 +26,16 @@ class Command(BaseCommand):
 				text = N.normalize(article.text)
 				text = text.translate(str.maketrans('', '', punctuation))
 				text = text.split()
-				text = [S.stem(word) for word in text if len(word) > 2]
+				text = [word for word in text if len(word) > 2]
 				vector = nan_to_num(mean([FT.get_word_vector(w) for w in text], axis=0))
-				vector = vector.astype('float32') 
+				vector = vector / (vector.dot(vector)) ** 0.5
 				obj = ArticleVector(
 						article=article,
 						embedding=vector.tolist()
 					)
 				obj.save()
-				article.is_vectorized = True
-				article.save()
+				#article.is_vectorized = True
+				#article.save()
 				index += 1
 			except Exception as e:
 				print(e)

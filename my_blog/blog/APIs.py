@@ -17,24 +17,19 @@ class listArticle(generics.ListAPIView):
 	def get(self, request):
 		word_vec = WordVector()
 		search_query = request.query_params.get('search', None)
-		print(search_query, 'search_query', time())
+
 		query_vec = word_vec.get_vector(search_query)
-		print(query_vec,'query_vec', time())
 		embeddind = ArticleVector.get_embedding_matrice()
-		print(embeddind.shape, 'embeddind', time())
 		article_ids = ArticleVector.get_articl_ids()
-		print(article_ids.shape, 'article_ids', time())
-		
+
 		corrolation = embeddind.dot(query_vec)
-		print(corrolation.shape, 'corrolation', time())
 		index = corrolation.argsort()
-		id_list = article_ids[index][-5:]
+		id_list = article_ids[index][-10:]
 		objs = self.get_queryset().filter(id__in=id_list)
-		serializer = get_serializer()(objs)
-		
+		serializer = self.get_serializer(objs, many=True)
+
 		return Response(serializer.data, status=status.HTTP_200_OK )
 
-		
 
 
 class ListCreateTag(generics.ListCreateAPIView):
