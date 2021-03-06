@@ -1,7 +1,6 @@
 from django.http import HttpResponse
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect, get_object_or_404
-# from django.contrib.auth.forms import UserCreationForm
 from .forms import SignUpForm, ArticleCreationForm, CommentForm
 from django.views import generic
 from .models import BlogUser, Article, Topic, Tag

@@ -17,12 +17,13 @@ class ListArticle(generics.ListAPIView):
 	def get(self, request):
 		word_vec = WordVector()
 		search_query = request.query_params.get('q', None)
-		print(search_query)
 
+		#get embedding vector for search query and articls
 		query_vec = word_vec.get_vector(search_query)
 		embeddind = ArticleVector.get_embedding_matrice()
 		article_ids = ArticleVector.get_articl_ids()
 
+		#compute corrolation between search query and articles and sort articles base on that
 		corrolation = embeddind.dot(query_vec)
 		index = corrolation.argsort()
 		id_list = article_ids[index][-10:]
@@ -219,8 +220,7 @@ class ArticleViewSet(mixins.UpdateModelMixin,
 				
 				if param['topic']:
 					filter['topic'] = param['topic']
-				else:
-					filter['topic__isnull'] = False
+				
 				return queryset.filter(**filter)
 				
 			elif param['bookmark'] is not None:
