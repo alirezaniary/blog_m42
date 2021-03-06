@@ -65,6 +65,12 @@
 		                                href="{% url 'blog:new_article' %}">مقاله جدید</a>
 		                        </li>
 		                    {% endif %}
+		                    {% if user.bloguser.is_manager %}
+		                        <li class="nav-item ">
+		                            <a class="nav-link d-flex justify-content-start"
+		                                href="{% url 'admin:index' %}">مدیریت</a>
+		                        </li>
+		                    {% endif %}
                             <li>
                                 <hr class="dropdown-divider">
                             </li>

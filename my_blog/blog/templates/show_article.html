@@ -16,20 +16,22 @@
     <div role="alert"> {{ error }} </div> 
 {% endif %} 
 
-<div class="sidebar d-flex flex-column align-items-center justify-content-center">
-{% include 'side_bar.html' %}
+{% if user.is_authenticated %}
+<div class="sidebar d-none d-lg-flex flex-column align-items-center justify-content-center">
+	{% include 'side_bar.html' %}
 </div>
+{% endif %}
 <div class="container w-75">
     <div class="user-info ">
-        <div class="container mt-5 d-flex justify-content-center h-165">
-            <div class="card card-body p-3 h-100">
-                <div class="d-flex align-items-center  h-100 justify-content-between">
-                    <div class="d-flex h-100 col-8">
-                    <div class="image h-100"> 
+        <div class="container mt-5 d-flex justify-content-center ">
+            <div class="card card-body p-3 ">
+                <div class="d-flex align-items-center flex-column flex-lg-row  justify-content-between">
+                    <div class="d-flex  col-8">
+                    <div class="image "> 
                     	{% if author.img_path %}
-                        <img src="/media/{{ author.img_path }}" class="rounded-app h-100"> 
+                        <img src="/media/{{ author.img_path }}" class="rounded-app " width="120"> 
                         {% else %}
-                        <img src="{% static 'blog/profile_picture_placeholder.jpeg' %}" class="rounded-app h-100">
+                        <img src="{% static 'blog/profile_picture_placeholder.jpeg' %}" class="rounded-app " width="120">
                         {% endif %}
                     </div>
                     <div class="ml-3 w-100 p-2">
@@ -38,7 +40,7 @@
                
                     </div>
                     </div>
-                <div class="p-2 col-3 bg-light text-dark d-flex flex-column justify-content-between rounded">
+                <div class="p-2 w-75 bg-light text-dark d-flex flex-column justify-content-between rounded">
                     	<div class="d-flex">
 		                        <div class="d-flex flex-column col-8">
 		                        <div class="d-flex flex-column"> 
@@ -185,6 +187,7 @@
 </svg>
 {% endif %}
 </p>
+					{% if user.is_authenticated %}
 					<div class="d-flex">
 						<form class="d-flex w-100 justify-content-around">
 							<input hidden name="{{ form.response_to.name }}" value="{{ com.id }}">	
@@ -193,6 +196,7 @@
 							<button class="btn btn-light text-muted response-btn">پاسخ</button>
 						</form>
 					</div>
+					{% endif %}
 					{% if not forloop.last %}
 					<hr/>
 					{% endif %}
@@ -207,7 +211,7 @@
 {% endblock %}
 {% block footer %}
 
- 	
+ 	{% if user.is_authenticated %}
 	<form class="d-flex w-100 justify-content-around">
 		{% csrf_token %}
 		<input hidden name="{{ form.response_to.name }}" value="">	
@@ -216,7 +220,7 @@
 		 placeholder="به {{ author.first_name }} بگویید در مورد مقاله اش چه نظری دارید">
 		<button class="comment-btn btn btn-outline-secondary btn-sm col-2" type="submit">ارسال نظر</button>
 	</form>
-
+	{% endif %}
 
 
 {% endblock %}

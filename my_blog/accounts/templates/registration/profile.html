@@ -83,12 +83,20 @@
 				نظرات شما
 				<span class="badge bg-primary rounded-pill">{{ user.bloguser.comments.count }}</span>
 	  		</a>
+	  		{% if user.bloguser.is_manager %}
+	  		<a href="{% url 'admin:index' %}" id="user-comments" class="list-group-item d-flex justify-content-center align-items-center list-group-item-action">
+				پنل مدیریت
+	  		</a>
+	  		{% endif %}
 		</ul>
 	</aside>
-	<div id="content" class=" w-100 container px-5 py-3">
+	<div class="w-100">
+		<div id="content" class=" w-100 container px-5 py-3">
 		
+		</div>
+		<div id="buttons" class="d-flex justify-content-around">
 		
-
+		</div>
 	</div>
 </div>
 

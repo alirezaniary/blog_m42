@@ -109,6 +109,7 @@ $(document).ready(function () {
 	
 	function flushContent(){
 		$('#content').empty()
+		$('#buttons').empty()
 	}
 	
 
@@ -128,41 +129,81 @@ $(document).ready(function () {
 			})
 		input_data = {csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val()}
 		}
+
+
+
+	function nextPage(link, func){
+		$('<a>').text('صفحه بعد').prop('href', '#').addClass('btn btn-outline-success').appendTo('#buttons').click(function(){
+			$.get(link, function(result){
+				flushContent()
+				func(result);
+				if(result.next) nextPage(result.next, func)
+				if(result.previous) previusPage(result.previous, func)
+			});
+		})
+	}
+
+	function previusPage(link, func){
+		$('<a>').text('صفحه قبل').prop('href', '#').addClass('btn btn-outline-success').appendTo('#buttons').click(function(){
+			$.get(link, function(result){
+				flushContent()
+				func(result);
+				if(result.next) nextPage(result.next, func)
+				if(result.previous) previusPage(result.previous, func)
+			});
+		})
+	}
 	
-	
+
+
+
 	$('#author-articles').click(function(){
 		flushContent()
 		$.get('/api/article/', {profile: $('#id').text()}, function(data){
-				articleRenderer(data);
-			});
+			articleRenderer(data);
+			if(data.next) nextPage(data.next, articleRenderer)
+			if(data.previous) previusPage(data.previous, articleRenderer)
+		});
 	});
+	
 	
 	$('.not-valid-articles').click(function(){
 		flushContent()
 		$.get('/api/article/', {editor: $('#id').text(),
 								topic: $(this).prop('id')}, function(data){
-				articleRenderer(data);
+			articleRenderer(data);
+			if(data.next) nextPage(data.next, articleRenderer)
+			if(data.previous) previusPage(data.previous, articleRenderer)
 			});
 	});
+	
 	
 	$('#bookmarked-articles').click(function(){
 		flushContent()
 		$.get('/api/article/', {bookmark: $('#id').text()}, function(data){
-				articleRenderer(data);
+			articleRenderer(data);
+			if(data.next) nextPage(data.next, articleRenderer)
+			if(data.previous) previusPage(data.previous, articleRenderer)
 			});
 	});
+	
 	
 	$('#liked-articles').click(function(){
 		flushContent()
 		$.get('/api/article/', {liked: $('#id').text()}, function(data){
-				articleRenderer(data);
+			articleRenderer(data);
+			if(data.next) nextPage(data.next, articleRenderer)
+			if(data.previous) previusPage(data.previous, articleRenderer)
 			});
 	});
+	
 	
 	$('#user-comments').click(function(){
 		flushContent()
 		$.get('/api/comment/', {profile: $('#id').text()}, function(data){
-				commentRenderer(data);
+			commentRenderer(data);
+			if(data.next) nextPage(data.next, commentRenderer)
+			if(data.previous) previusPage(data.previous, commentRenderer)
 			});
 	});
 	
@@ -170,15 +211,20 @@ $(document).ready(function () {
 		flushContent()
 		$.get('/api/comment/', {editor: $('#id').text(),
 								topic: $(this).prop('id')}, function(data){
-				commentRenderer(data);
+			commentRenderer(data);
+			if(data.next) nextPage(data.next, commentRenderer)
+			if(data.previous) previusPage(data.previous, commentRenderer)
 			});
 	});
+	
 	
 	$('#following-authors').click(function(){
 		flushContent()
 		$.get('/api/follow/', {profile: $('#id').text()}, function(data){
-				authorRenderer(data);
+			authorRenderer(data);
+			if(data.next) nextPage(data.next, authorRenderer)
+			if(data.previous) previusPage(data.previous, authorRenderer)
 			});
 	});
-	
+	console.log('dd')
 });
