@@ -3,8 +3,8 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
 
 GROUPS = ['managers']
-MODELS = ['article', 'comment', 'blog user', 'tag', 'topic']
-PERMISSIONS = ['view', 'add', 'change'] 
+MODELS = ['article', 'comment', 'bloguser', 'tag', 'topic']
+PERMISSIONS = ['view', 'add', 'change']
 
 
 class Command(BaseCommand):
@@ -15,10 +15,10 @@ class Command(BaseCommand):
 			new_group, _ = Group.objects.get_or_create(name=group)
 			for model in MODELS:
 				for permission in PERMISSIONS:
-					name = 'Can {} {}'.format(permission, model)
-					print("Creating {}".format(name))
+					codename = '{}_{}'.format(permission, model)
+					print("Creating {}".format(codename))
 
-					model_add_perm = Permission.objects.get(name=name)
+					model_add_perm = Permission.objects.get(codename=codename)
 					new_group.permissions.add(model_add_perm)
 
 		print("Created default group and permissions.")

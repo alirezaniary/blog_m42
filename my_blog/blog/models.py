@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.core.validators import MinLengthValidator
 from django.contrib.postgres.fields import ArrayField
+from django.contrib.auth.models import Group
 import pymongo
 import numpy
 import redis
@@ -140,12 +141,18 @@ class BlogUser(User):
 		'Article', through='Bookmark', related_name='bookmarkedBy', verbose_name='نشان کردن')
 	bio = models.CharField('درباره من', max_length=250)
 
+	def save(self, *args, **kwargs):
+		if self.is_manager:
+			self.groups.add(Group.objects.get(name='managers'))
+
+		super().save(*args, **kwargs)
+
 	def __str__(self):
 		return self.username
 
 	def full_name(self):
 		return self.first_name + ' ' + self.last_name
-	
+
 	def user_follow_status(self, user):
 		try:
 			obj = Follow.objects.get(author=self, user=user)
