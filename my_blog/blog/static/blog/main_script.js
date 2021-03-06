@@ -20,47 +20,53 @@ $(document).ready(function () {
 	  }
 	  prevScrollpos = currentScrollPos;
 	}
-	
+
 	function tagRenderer(tags){
+		$('#tagS').remove()
 		$tagSection = $('<div>').addClass('card-body').append(
-			$('<label>').text('جستجو در برچسب ها')
-		)
+			$('<label>').text('جستجو در برچسب ها').addClass('p-2 bg-secondary')
+		).prop('id', 'tagS')
 		for(tag of tags.results){
-			
+
 			$tagSection.append(
-				$('<a>').addClass('px-1').text(tag.name).prop('href', `/tags/${tag.name}`)
+				$('<a>').addClass('px-1 text-decoration-none').text(tag.name).prop('href', `/tags/${tag.name}`)
 			)
 		}
 		$('#search-results').append($tagSection)
 	}
-	
-	
+
+
 	function topicRenderer(topics){
+		$('topicS').remove()
 		$topicSection = $('<div>').addClass('card-body').append(
-			$('<label>').text('جستجو در دسته بندی ها')
-		)
+			$('<label>').text('جستجو در دسته بندی ها').addClass('p-2 bg-secondary')
+		).prop('id', 'topicS')
 		for(topic of topics.results){
-			
+
 			$topicSection.append(
-				$('<a>').addClass('px-1').text(topic).prop('href', `/tags/${topic}`)
+				$('<a>').addClass('px-1 text-decoration-none').text(topic).prop('href', `/tags/${topic}`)
 			)
 		}
 		$('#search-results').append($topicSection)
 	}
-	
+
 	function artRenderer(arts){
-		$articleSection = $('<div>').addClass('card-body d-flex flex-column')
-		for(art of arts.results){
-			
+		$('#artS').remove()
+		$articleSection = $('<div>').addClass('card-body d-flex flex-column').append(
+                        $('<label>').text('جستجو در مقالات').addClass('p-2 bg-secondary')
+                ).prop('id', 'artS')
+
+		for(art of arts){
 			$articleSection.append(
-				$('<a>').addClass('px-1').text(art.title).prop('href', `/@${art.username}/${art.id}`)
+				$('<a>').addClass('px-1 text-decoration-none').text(art.title).prop('href', `/@${art.username}/${art.id}`)
 			)
 		}
 		$('#search-results').append($articleSection)
 	}
-	
+
 	$('#search-bar').keyup(function(event){
 			var keycode = (event.keyCode ? event.keyCode : event.which);
+			$('#search-results').empty()
 			if(keycode>=37 && keycode<=40){
 				console.log('salam chetory')
 			}
@@ -69,23 +75,23 @@ $(document).ready(function () {
 				if (keycode != 8){
 					$.get('/api/search/',{q: $(this).val()},
 					function(data){
-						console.log(data)
+						artRenderer(data);
 						}
 	  				);
   				}
-  				
+
   				$.get('/api/tag/',{name: $(this).val()},
 				function(data){
-					tagRenderer(data)
+					if(data.results.length) tagRenderer(data);
 					}
   				);
-  				
+
   				$.get('/api/topic/',{name: $(this).val()},
 				function(data){
-					topicRenderer(data)
+					if(data.results.length) topicRenderer(data);
 					}
   				);
   			}
 	});
-console.log('hir')
+console.log('hio')
 });
