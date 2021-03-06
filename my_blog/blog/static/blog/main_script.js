@@ -12,6 +12,7 @@ $(document).ready(function () {
 	  } else {
 		document.getElementById("navbar").style.top = -$('#navbar').outerHeight() + 'px';
 		$('.dropdown-menu-nav').addClass('d-none')
+		$('#search-results').hide()
 	  }
 	  if (prevScrollpos < currentScrollPos) {
 		document.getElementById("footer").style.bottom = "0";
@@ -53,7 +54,7 @@ $(document).ready(function () {
 	function artRenderer(arts){
 		$('#artS').remove()
 		$articleSection = $('<div>').addClass('card-body d-flex flex-column').append(
-                        $('<label>').text('جستجو در مقالات').addClass('p-2 bg-secondary')
+                          $('<label>').text('جستجو در مقالات').addClass('p-2 bg-secondary')
                 ).prop('id', 'artS')
 
 		for(art of arts){
@@ -65,6 +66,7 @@ $(document).ready(function () {
 	}
 
 	$('#search-bar').keyup(function(event){
+			if(! $('#search-results').is(":visible")) $('#search-results').show()
 			var keycode = (event.keyCode ? event.keyCode : event.which);
 			$('#search-results').empty()
 			if(keycode>=37 && keycode<=40){
@@ -93,5 +95,8 @@ $(document).ready(function () {
   				);
   			}
 	});
-console.log('hio')
+	
+	$(window).click(function () { $('#search-results').hide() }); 
+	$('#search-results').click(function (event) {event.stopPropagation();});
+console.log('ho')
 });
